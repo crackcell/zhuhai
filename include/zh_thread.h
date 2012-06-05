@@ -23,8 +23,7 @@
 
 #include <stdint.h>
 
-uint64_t get_threadid_self();
-uint64_t get_threadid();
+uint64_t get_tid_self();
 
 #endif /* _ZH_THREAD_H_ */
 

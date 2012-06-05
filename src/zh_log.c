@@ -35,13 +35,35 @@
 #define STRING_TRACE   "TRACE"
 #define STRING_DEBUG   "DEBUG"
 
-static pthread_key_t g_log_key;
+static char g_log_path[ZH_LOG_MAX_FILE_NAME + 1];
+static char g_log_name[ZH_LOG_MAX_FILE_NAME + 1];
 
+static pthread_key_t g_log_key;
+static pthread_once_t g_log_key_once = PTHREAD_ONCE_INIT;
+
+static void create_thread_key();
+static int create_thread_key_once();
 static struct zh_log *get_log();
 static int zh_vwritelog_buff(struct zh_log_file *file_ptr, const char *buff);
 
-int zh_openlog(const char *log_path, const char *log_name,
+int zh_openlog(const char *log_name, const char *log_path,
                const int event_mask, const int log_level) {
+    if (NULL == log_name || '\0' == log_name[0]) {
+        snprintf(g_log_name, sizeof(g_log_name), "%s", "null");
+    } else {
+        strncpy(g_log_name, log_name, ZH_LOG_MAX_FILE_NAME);
+        g_log_name[ZH_LOG_MAX_FILE_NAME] = '\0';
+    }
+
+    if (NULL == log_path || '\0' == log_path[0]) {
+        snprintf(g_log_path, sizeof(g_log_path), "%s", ".");
+    } else {
+        strncpy(g_log_path, log_path, ZH_LOG_MAX_FILE_NAME);
+        g_log_path[ZH_LOG_MAX_FILE_NAME] = '\0';
+    }
+
+    create_thread_key_once();
+
     return ZH_LOG_SUCC;
 }
 
@@ -105,6 +127,15 @@ int zh_vwritelog(struct zh_log *log_ptr, const int event,
     vsnprintf(&buff[bpos], ZH_LOG_BUFF_SIZE - bpos, format, args);
 
     return zh_vwritelog_buff(file_ptr, buff);
+}
+
+void create_thread_key() {
+    pthread_key_create(&g_log_key, NULL);
+}
+
+int create_thread_key_once() {
+    pthread_once(&g_log_key_once, create_thread_key);
+    return 0;
 }
 
 struct zh_log *get_log() {

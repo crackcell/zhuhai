@@ -45,13 +45,13 @@ struct zh_log_file {
     FILE *fp;
     int ref_count;
     pthread_mutex_t file_lock;
-    char file_name[ZH_LOG_MAX_FILE_NAME];
+    char file_name[ZH_LOG_MAX_FILE_NAME + 1];
 };
 
 struct zh_log {
     int used;
     int event_mask;
-    pthread_t tid;
+    uint64_t tid;
     char log_name[ZH_LOG_MAX_FILE_NAME];
     struct zh_log_file log_file;
     struct zh_log_file log_file_wf;

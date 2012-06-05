@@ -13,7 +13,10 @@ include Makefile.env
 
 .PHONY : all output clean help
 
-all : output
+all : output test
+
+test :
+	make -C test
 
 output :
 	mkdir -p output
@@ -22,6 +25,7 @@ output :
 clean :
 	rm -rf output
 	make clean -C src
+	make clean -C test
 
 help :
 	@echo 'Usage: make [TARGET]'
