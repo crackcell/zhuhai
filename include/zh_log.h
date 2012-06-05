@@ -25,9 +25,7 @@
 #include <stdint.h>
 #include <pthread.h>
 
-#define ZH_LOG_SUCC   0
-#define ZH_LOG_EVENT -3
-#define ZH_LOG_ERROR -4
+#include "zh_public.h"
 
 #define ZH_LOG_MAX_FILE_SIZE 2045   /** in MB */
 #define ZH_LOG_MAX_FILE_NAME 1024
@@ -45,7 +43,7 @@ struct zh_log_file {
     FILE *fp;
     int ref_count;
     pthread_mutex_t file_lock;
-    char file_name[ZH_LOG_MAX_FILE_NAME + 1];
+    char file_name[ZH_LOG_MAX_FILE_NAME + 8]; /** + .log.wf */
 };
 
 struct zh_log {
@@ -53,8 +51,8 @@ struct zh_log {
     int event_mask;
     uint64_t tid;
     char log_name[ZH_LOG_MAX_FILE_NAME];
-    struct zh_log_file log_file;
-    struct zh_log_file log_file_wf;
+    struct zh_log_file *file_ptr;
+    struct zh_log_file *file_wf_ptr;
 };
 
 int zh_openlog(const char *log_path, const char *log_name,
