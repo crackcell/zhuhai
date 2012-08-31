@@ -40,57 +40,47 @@
 static pthread_key_t g_log_unit_key;
 static pthread_once_t g_log_unit_key_once = PTHREAD_ONCE_INIT;
 
+static int g_mask;
+static char g_log_name[ZH_LOG_MAX_FILE_NAME];
+static struct zh_log_file *g_file_ptr;
+static struct zh_log_file *g_file_wf_ptr;
+
 static void create_thread_key();
 
-static inline int __openlog(struct zh_log *log_ptr, const char *file_path,
-                            const char *file_name, const int mask);
-static inline int __openlog_file(struct zh_log *log_ptr, const char *file_path,
-                                 const char *file_name);
+static inline int __openlog(const char *file_path, const char *file_name,
+                            const int mask);
+static inline int __openlog_file(const char *file_path, const char *file_name);
 static void log_unit_destructor(void *unit_ptr);
-static int __closelog_file(struct zh_log *log_ptr);
+static int __closelog_file();
 
 static int __vwritelog(struct zh_log_unit *unit_ptr, const int event,
                        const char *fmt, va_list args);
 static int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff);
 
-zh_log_t zh_openlog(const char *log_name,
-                    const char *file_path, const char *file_name,
-                    const int mask) {
-    struct zh_log *log_ptr = (struct zh_log*)malloc(sizeof(struct zh_log));
-    if (NULL == log_ptr) {
-        fprintf(stderr, "mem error\n");
-        goto error;
-    }
-    bzero(log_ptr, sizeof(struct zh_log));
+int zh_openlog(const char *log_name,
+               const char *file_path, const char *file_name,
+               const int mask) {
 
-    snprintf(log_ptr->log_name, sizeof(log_ptr->log_name), "%s", log_name);
-    log_ptr->log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
+    snprintf(g_log_name, sizeof(g_log_name), "%s", log_name);
+    g_log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
 
-    if (ZH_FAIL == __openlog_file(log_ptr, file_path, file_name)) {
+    if (ZH_FAIL == __openlog_file(file_path, file_name)) {
         fprintf(stderr, "open file fail\n");
         goto error;
     }
 
-    log_ptr->mask = mask;
-    if (ZH_FAIL == zh_openlog_r(log_ptr)) {
+    g_mask = mask;
+    if (ZH_FAIL == zh_openlog_r()) {
         fprintf(stderr, "alloc log unit fail\n");
         goto error;
     }
 
-    log_ptr->used = 1;
-    return log_ptr;
+    return ZH_SUCC;
 error:
-    if (log_ptr != NULL) {
-        free(log_ptr);
-        log_ptr = NULL;
-    }
-    return NULL;
+    return ZH_FAIL;
 }
 
-int zh_openlog_r(struct zh_log *log_ptr) {
-    if (NULL == log_ptr) {
-        return ZH_FAIL;
-    }
+int zh_openlog_r() {
 
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
@@ -101,12 +91,11 @@ int zh_openlog_r(struct zh_log *log_ptr) {
         goto error;
     }
 
-    unit_ptr->mask = log_ptr->mask;
+    unit_ptr->mask = g_mask;
     unit_ptr->tid = pthread_self();
-    unit_ptr->file_ptr = log_ptr->file_ptr;
-    unit_ptr->file_wf_ptr = log_ptr->file_wf_ptr;
-    snprintf(unit_ptr->log_name, sizeof(unit_ptr->log_name), "%s",
-             log_ptr->log_name);
+    unit_ptr->file_ptr = g_file_ptr;
+    unit_ptr->file_wf_ptr = g_file_wf_ptr;
+    snprintf(unit_ptr->log_name, sizeof(unit_ptr->log_name), "%s", g_log_name);
     unit_ptr->log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
 
     pthread_setspecific(g_log_unit_key, unit_ptr);
@@ -117,12 +106,9 @@ error:
     return ZH_FAIL;
 }
 
-int zh_closelog(struct zh_log *log_ptr) {
-    if (NULL == log_ptr) {
-        return ZH_FAIL;
-    }
+int zh_closelog() {
 
-    if (ZH_FAIL == __closelog_file(log_ptr)) {
+    if (ZH_FAIL == __closelog_file()) {
         fprintf(stderr, "close log file fail\n");
     }
 
@@ -130,15 +116,10 @@ int zh_closelog(struct zh_log *log_ptr) {
         fprintf(stderr, "close log unit fail\n");
     }
 
-    free(log_ptr);
-
     return ZH_SUCC;
 }
 
-int zh_closelog_r(struct zh_log *log_ptr) {
-    if (NULL == log_ptr) {
-        return ZH_FAIL;
-    }
+int zh_closelog_r() {
 
     // in case key has not been created
     pthread_once(&g_log_unit_key_once, create_thread_key);
@@ -162,17 +143,14 @@ int zh_writelog(const int event, const char *fmt, ...) {
 
     struct zh_log_unit *unit_ptr =
             (struct zh_log_unit*)pthread_getspecific(g_log_unit_key);
-    printf("## 1\n");
     if (NULL == unit_ptr) {
         vfprintf(stderr, fmt, args);
         va_end(args);
         return ZH_SUCC;
     }
-    printf("## 2\n");
 
     ret = __vwritelog(unit_ptr, event, fmt, args);
     va_end(args);
-    printf("************** ret=%d\n", ret);
 
     return ret;
 }
@@ -191,67 +169,66 @@ void log_unit_destructor(void *unit_ptr) {
     }
 }
 
-int __openlog_file(struct zh_log *log_ptr, const char *file_path,
-                   const char *file_name) {
-    log_ptr->file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
-    log_ptr->file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
+int __openlog_file(const char *file_path, const char *file_name) {
+    g_file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
+    g_file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
 
-    if (NULL == log_ptr->file_ptr || NULL == log_ptr->file_wf_ptr) {
+    if (NULL == g_file_ptr || NULL == g_file_wf_ptr) {
         fprintf(stderr, "alloc log file fail\n");
         goto error;
     }
 
-    snprintf(log_ptr->file_ptr->file_name,
-             sizeof(log_ptr->file_ptr->file_name), "%s/%s.log",
+    snprintf(g_file_ptr->file_name,
+             sizeof(g_file_ptr->file_name), "%s/%s.log",
              file_path, file_name);
-    log_ptr->file_ptr->fp = fopen(log_ptr->file_ptr->file_name, "a+");
-    if (NULL == log_ptr->file_ptr->fp) {
+    g_file_ptr->fp = fopen(g_file_ptr->file_name, "a+");
+    if (NULL == g_file_ptr->fp) {
         goto error;
     }
 
-    snprintf(log_ptr->file_wf_ptr->file_name,
-             sizeof(log_ptr->file_wf_ptr->file_name), "%s/%s.log.wf",
+    snprintf(g_file_wf_ptr->file_name,
+             sizeof(g_file_wf_ptr->file_name), "%s/%s.log.wf",
              file_path, file_name);
-    log_ptr->file_wf_ptr->fp = fopen(log_ptr->file_wf_ptr->file_name, "a+");
-    if (NULL == log_ptr->file_wf_ptr->fp) {
+    g_file_wf_ptr->fp = fopen(g_file_wf_ptr->file_name, "a+");
+    if (NULL == g_file_wf_ptr->fp) {
         goto error;
     }
 
     return ZH_SUCC;
 error:
-    if (log_ptr->file_ptr != NULL) {
-        if (log_ptr->file_ptr->fp !=0) {
-            fclose(log_ptr->file_ptr->fp);
-            log_ptr->file_ptr->fp = 0;
+    if (g_file_ptr != NULL) {
+        if (g_file_ptr->fp !=0) {
+            fclose(g_file_ptr->fp);
+            g_file_ptr->fp = 0;
         }
-        free(log_ptr->file_ptr);
-        log_ptr->file_ptr = NULL;
+        free(g_file_ptr);
+        g_file_ptr = NULL;
     }
-    if (log_ptr->file_wf_ptr != NULL) {
-        if (log_ptr->file_wf_ptr->fp != 0) {
-            fclose(log_ptr->file_wf_ptr->fp);
-            log_ptr->file_wf_ptr->fp = 0;
+    if (g_file_wf_ptr != NULL) {
+        if (g_file_wf_ptr->fp != 0) {
+            fclose(g_file_wf_ptr->fp);
+            g_file_wf_ptr->fp = 0;
         }
-        free(log_ptr->file_wf_ptr);
-        log_ptr->file_wf_ptr = NULL;
+        free(g_file_wf_ptr);
+        g_file_wf_ptr = NULL;
     }
     return ZH_FAIL;
 }
 
-int __closelog_file(struct zh_log *log_ptr) {
-    if (log_ptr->file_ptr != NULL) {
-        if (log_ptr->file_ptr->fp != NULL) {
-            fclose(log_ptr->file_ptr->fp);
+int __closelog_file() {
+    if (g_file_ptr != NULL) {
+        if (g_file_ptr->fp != NULL) {
+            fclose(g_file_ptr->fp);
         }
-        free(log_ptr->file_ptr);
-        log_ptr->file_ptr = NULL;
+        free(g_file_ptr);
+        g_file_ptr = NULL;
     }
-    if (log_ptr->file_wf_ptr != NULL) {
-        if (log_ptr->file_wf_ptr->fp != NULL) {
-            fclose(log_ptr->file_wf_ptr->fp);
+    if (g_file_wf_ptr != NULL) {
+        if (g_file_wf_ptr->fp != NULL) {
+            fclose(g_file_wf_ptr->fp);
         }
-        free(log_ptr->file_wf_ptr);
-        log_ptr->file_wf_ptr = NULL;
+        free(g_file_wf_ptr);
+        g_file_wf_ptr = NULL;
     }
     return ZH_SUCC;
 }

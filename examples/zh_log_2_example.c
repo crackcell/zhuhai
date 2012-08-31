@@ -22,13 +22,36 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <pthread.h>
 
 zh_log_t g_zlog;
 
+void *thread_func(void *arg_ptr) {
+    zh_openlog_r();
+    int count = 0;
+    while (1) {
+        count++;
+        zh_writelog(ZH_LOG_NOTICE, "%d", count);
+        sleep(1);
+    }
+}
+
 int main(int argc, char *argv[]) {
-    zh_log_t zlog = zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
-    zh_writelog(ZH_LOG_DEBUG, "%s", "test log");
-    zh_closelog(zlog);
+    zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    zh_writelog(ZH_LOG_DEBUG, "main thread starts");
+
+    pthread_t p[10];
+    int i;
+    for (i = 0; i < 10; i++) {
+        pthread_create(&(p[i]), NULL, thread_func, NULL);
+    }
+
+    for (i = 0; i < 10; i++) {
+        pthread_join(p[i], NULL);
+    }
+
+    zh_closelog();
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

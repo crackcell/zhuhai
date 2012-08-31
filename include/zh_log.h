@@ -63,16 +63,15 @@ struct zh_log_unit {
     struct zh_log_file *file_wf_ptr;
 };
 
-zh_log_t zh_openlog(const char *log_name,
-                    const char *file_path, const char *file_name,
-                    const int event_mask);
-int zh_openlog_r(struct zh_log *log_ptr);
+int zh_openlog(const char *log_name,
+               const char *file_path, const char *file_name,
+               const int mask);
+int zh_openlog_r();
 
 int zh_writelog(const int event, const char *format, ...);
-int zh_vwritelog(struct zh_log *log_ptr, const int event, const char *format,
-                 va_list args);
+int zh_vwritelog(const int event, const char *format, va_list args);
 
-int zh_closelog(zh_log_t zlog);
+int zh_closelog();
 int zh_closelog_r();
 
 int zh_writelog(const int event, const char *fmt, ...);

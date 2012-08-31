@@ -26,9 +26,9 @@
 zh_log_t g_zlog;
 
 int main(int argc, char *argv[]) {
-    zh_log_t zlog = zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
     zh_writelog(ZH_LOG_DEBUG, "%s", "test log");
-    zh_closelog(zlog);
+    zh_closelog();
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */
