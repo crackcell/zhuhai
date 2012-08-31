@@ -26,24 +26,25 @@
 
 #include "public.h"
 
-zh_log_t zlog;
+zh_log_t g_zlog;
 
 int init_suite(void) {
-    zlog = NULL;
+    g_zlog = NULL;
     return 0;
 }
 
 int clean_suite(void) {
-    zlog = NULL;
+    g_zlog = NULL;
     return 0;
 }
 
 void TEST_openlog(void) {
-    zlog = zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    g_zlog = zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
     CU_ASSERT(log != NULL);
 }
 
 void TEST_closelog(void) {
+    CU_ASSERT(zh_closelog(g_zlog) != ZH_FAIL);
 }
 
 int main(int argc, char *argv[]) {

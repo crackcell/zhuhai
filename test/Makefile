@@ -14,7 +14,7 @@ include ../Makefile.env
 BUILD_TARGETS = zh_log_SUITE
 
 INC = -I../include -I../src
-LIB = -lcunit
+LIB = -lcunit -lpthread
 
 OBJ = ../src/libzhuhai.a
 
@@ -35,4 +35,4 @@ clean :
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
 check : all
-	valgrind --leak-check=full --show-reachable=yes ./zh_log_test
+	valgrind --leak-check=full --show-reachable=yes ./zh_log_SUITE
