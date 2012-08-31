@@ -13,7 +13,7 @@ include Makefile.env
 
 .PHONY : all output clean help
 
-all : output test
+all : output
 
 test :
 	make -C test
