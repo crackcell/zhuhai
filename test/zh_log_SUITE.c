@@ -47,6 +47,10 @@ void TEST_closelog(void) {
     CU_ASSERT(zh_closelog(g_zlog) != ZH_FAIL);
 }
 
+void TEST_writelog(void) {
+    CU_ASSERT(zh_writelog(ZH_LOG_DEBUG, "%s", "test log"));
+}
+
 int main(int argc, char *argv[]) {
     CU_pSuite suite_ptr = NULL;
 
@@ -63,6 +67,7 @@ int main(int argc, char *argv[]) {
 
     struct unittest test_list[] = {
         {"openlog", suite_ptr, TEST_openlog},
+        {"writelog", suite_ptr, TEST_writelog},
         {"closelog", suite_ptr, TEST_closelog},
     };
 

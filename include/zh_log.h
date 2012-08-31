@@ -41,12 +41,13 @@
 
 struct zh_log_file {
     FILE *fp;
-    pthread_mutex_t file_lock;
+    pthread_mutex_t lock;
     char file_name[ZH_LOG_MAX_FILE_NAME + 8]; /** + .log.wf */
 };
 
 struct zh_log {
     int used;
+    int mask;
     char log_name[ZH_LOG_MAX_FILE_NAME];
     struct zh_log_file *file_ptr;
     struct zh_log_file *file_wf_ptr;
@@ -54,6 +55,7 @@ struct zh_log {
 typedef struct zh_log * zh_log_t;
 
 struct zh_log_unit {
+    int used;
     pthread_t tid;
     int mask;
     char log_name[ZH_LOG_MAX_FILE_NAME];
@@ -72,6 +74,8 @@ int zh_vwritelog(struct zh_log *log_ptr, const int event, const char *format,
 
 int zh_closelog(zh_log_t zlog);
 int zh_closelog_r();
+
+int zh_writelog(const int event, const char *fmt, ...);
 
 #endif /* _ZH_LOG_H_ */
 
