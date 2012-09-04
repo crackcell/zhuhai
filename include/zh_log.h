@@ -41,25 +41,36 @@
 
 struct zh_log_file {
     FILE *fp;
-    int ref_count;
     pthread_mutex_t file_lock;
     char file_name[ZH_LOG_MAX_FILE_NAME + 8]; /** + .log.wf */
 };
 
 struct zh_log {
     int used;
-    int event_mask;
-    uint64_t tid;
+    struct zh_log_file *file_ptr;
+    struct zh_log_file *file_wf_ptr;
+};
+typedef struct zh_log * zh_log_t;
+
+struct zh_log_unit {
+    pthread_t tid;
+    int mask;
     char log_name[ZH_LOG_MAX_FILE_NAME];
     struct zh_log_file *file_ptr;
     struct zh_log_file *file_wf_ptr;
 };
 
-int zh_openlog(const char *log_path, const char *log_name,
-               const int event_mask, const int log_level);
+zh_log_t zh_openlog(const char *log_name,
+                    const char *file_path, const char *file_name,
+                    const int event_mask);
+int zh_openlog_r(struct zh_log *log_ptr);
+
 int zh_writelog(const int event, const char *format, ...);
 int zh_vwritelog(struct zh_log *log_ptr, const int event, const char *format,
                  va_list args);
+
+int zh_closelog(zh_log_t log);
+int zh_closelog_r();
 
 #endif /* _ZH_LOG_H_ */
 

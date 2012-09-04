@@ -13,3 +13,10 @@
 
 # emacs backup
 #*#
+
+# log
+*.log
+*.log.wf
+
+# test
+*_SUITE

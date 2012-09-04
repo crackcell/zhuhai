@@ -26,18 +26,24 @@
 
 #include "public.h"
 
-int InitSuite(void) {
+zh_log_t zlog;
+
+int init_suite(void) {
+    zlog = NULL;
     return 0;
 }
 
-int CleanSuite(void) {
+int clean_suite(void) {
+    zlog = NULL;
     return 0;
 }
 
-void TEST_TermDict_create(void) {
+void TEST_openlog(void) {
+    zlog = zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    CU_ASSERT(log != NULL);
 }
 
-void TEST_TermDict_destory(void) {
+void TEST_closelog(void) {
 }
 
 int main(int argc, char *argv[]) {
@@ -48,15 +54,15 @@ int main(int argc, char *argv[]) {
         return CU_get_error();
 
     /* add a suite to the registry */
-    suite_ptr = CU_add_suite("suite", InitSuite, CleanSuite);
+    suite_ptr = CU_add_suite("suite", init_suite, clean_suite);
     if (NULL == suite_ptr) {
         CU_cleanup_registry();
         return CU_get_error();
     }
 
     struct unittest test_list[] = {
-        {"TermDict_create", suite_ptr, TEST_TermDict_create},
-        {"TermDict_destory", suite_ptr, TEST_TermDict_destory},
+        {"openlog", suite_ptr, TEST_openlog},
+        {"closelog", suite_ptr, TEST_closelog},
     };
 
     for (size_t i = 0; i < sizeof(test_list) / sizeof(struct unittest); i++) {
