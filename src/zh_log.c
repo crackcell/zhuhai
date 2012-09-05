@@ -46,7 +46,7 @@ static inline int __openlog(struct zh_log *log_ptr, const char *file_path,
 static inline int __openlog_file(struct zh_log *log_ptr, const char *file_path,
                                  const char *file_name);
 static void log_unit_destructor(void *unit_ptr);
-static inline int __openlog_unit_r(struct zh_log *log_ptr, const char *log_name);
+static int __closelog_file(struct zh_log *log_ptr);
 
 zh_log_t zh_openlog(const char *log_name,
                     const char *file_path, const char *file_name,
@@ -58,12 +58,15 @@ zh_log_t zh_openlog(const char *log_name,
     }
     bzero(log_ptr, sizeof(struct zh_log));
 
+    snprintf(log_ptr->log_name, sizeof(log_ptr->log_name), "%s", log_name);
+    log_ptr->log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
+
     if (ZH_FAIL == __openlog_file(log_ptr, file_path, file_name)) {
         fprintf(stderr, "open file fail\n");
         goto error;
     }
 
-    if (ZH_FAIL == __openlog_unit_r(log_ptr, log_name)) {
+    if (ZH_FAIL == zh_openlog_r(log_ptr)) {
         fprintf(stderr, "alloc log unit fail\n");
         goto error;
     }
@@ -77,19 +80,11 @@ error:
     return NULL;
 }
 
-// Private functions
-
-void create_thread_key() {
-    pthread_key_create(&g_log_unit_key, log_unit_destructor);
-}
-
-void log_unit_destructor(void *unit_ptr) {
-    if (unit_ptr != NULL) {
-        free(unit_ptr);
+int zh_openlog_r(struct zh_log *log_ptr) {
+    if (NULL == log_ptr) {
+        return ZH_FAIL;
     }
-}
 
-int __openlog_unit_r(struct zh_log *log_ptr, const char *log_name) {
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
     struct zh_log_unit *unit_ptr =
@@ -101,7 +96,8 @@ int __openlog_unit_r(struct zh_log *log_ptr, const char *log_name) {
     unit_ptr->tid = pthread_self();
     unit_ptr->file_ptr = log_ptr->file_ptr;
     unit_ptr->file_wf_ptr = log_ptr->file_wf_ptr;
-    snprintf(unit_ptr->log_name, sizeof(unit_ptr->log_name), "%s", log_name);
+    snprintf(unit_ptr->log_name, sizeof(unit_ptr->log_name), "%s",
+             log_ptr->log_name);
     unit_ptr->log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
 
     pthread_setspecific(g_log_unit_key, unit_ptr);
@@ -109,6 +105,58 @@ int __openlog_unit_r(struct zh_log *log_ptr, const char *log_name) {
     return ZH_SUCC;
 error:
     return ZH_FAIL;
+}
+
+int zh_closelog(struct zh_log *log_ptr) {
+    if (NULL == log_ptr) {
+        return ZH_FAIL;
+    }
+
+    if (ZH_FAIL == __closelog_file(log_ptr)) {
+        fprintf(stderr, "close log file fail\n");
+    }
+
+    if (ZH_FAIL == zh_closelog_r()) {
+        fprintf(stderr, "close log unit fail\n");
+    }
+
+    free(log_ptr);
+
+    return ZH_SUCC;
+}
+
+int zh_closelog_r(struct zh_log *log_ptr) {
+    if (NULL == log_ptr) {
+        return ZH_FAIL;
+    }
+
+    // in case key has not been created
+    pthread_once(&g_log_unit_key_once, create_thread_key);
+
+    struct zh_log_unit *unit_ptr =
+            (struct zh_log_unit*)pthread_getspecific(g_log_unit_key);
+    if (NULL == unit_ptr) {
+        fprintf(stderr, "close log unit fail: null\n");
+        return ZH_FAIL;
+    }
+    free(unit_ptr);
+    pthread_setspecific(g_log_unit_key, NULL);
+
+    return ZH_SUCC;
+}
+
+/**********************/
+/*  Private functions */
+/**********************/
+
+void create_thread_key() {
+    pthread_key_create(&g_log_unit_key, log_unit_destructor);
+}
+
+void log_unit_destructor(void *unit_ptr) {
+    if (unit_ptr != NULL) {
+        free(unit_ptr);
+    }
 }
 
 int __openlog_file(struct zh_log *log_ptr, const char *file_path,
@@ -156,6 +204,24 @@ error:
         log_ptr->file_wf_ptr = NULL;
     }
     return ZH_FAIL;
+}
+
+int __closelog_file(struct zh_log *log_ptr) {
+    if (log_ptr->file_ptr != NULL) {
+        if (log_ptr->file_ptr->fp != NULL) {
+            fclose(log_ptr->file_ptr->fp);
+        }
+        free(log_ptr->file_ptr);
+        log_ptr->file_ptr = NULL;
+    }
+    if (log_ptr->file_wf_ptr != NULL) {
+        if (log_ptr->file_wf_ptr->fp != NULL) {
+            fclose(log_ptr->file_wf_ptr->fp);
+        }
+        free(log_ptr->file_wf_ptr);
+        log_ptr->file_wf_ptr = NULL;
+    }
+    return ZH_SUCC;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

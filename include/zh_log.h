@@ -47,6 +47,7 @@ struct zh_log_file {
 
 struct zh_log {
     int used;
+    char log_name[ZH_LOG_MAX_FILE_NAME];
     struct zh_log_file *file_ptr;
     struct zh_log_file *file_wf_ptr;
 };
@@ -69,7 +70,7 @@ int zh_writelog(const int event, const char *format, ...);
 int zh_vwritelog(struct zh_log *log_ptr, const int event, const char *format,
                  va_list args);
 
-int zh_closelog(zh_log_t log);
+int zh_closelog(zh_log_t zlog);
 int zh_closelog_r();
 
 #endif /* _ZH_LOG_H_ */
