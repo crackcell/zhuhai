@@ -25,9 +25,9 @@ static size_t g_prime_table[] = {
     /* TODO: add more primes */
 };
 
-zh_hash_t zh_hash_alloc(zh_hash_func_t hash_func,
-                        zh_hash_node_free_func_t node_free_func,
-                        size_t init_bucket_size) {
+zh_hash_t *zh_hash_alloc(zh_hash_func_t hash_func,
+                         zh_hash_node_free_func_t node_free_func,
+                         size_t init_bucket_size) {
 
     struct zh_hash *hash_ptr = (struct zh_hash*)malloc(sizeof(struct zh_hash));
     if (NULL == hash_ptr) {
@@ -40,14 +40,14 @@ zh_hash_t zh_hash_alloc(zh_hash_func_t hash_func,
             break;
         }
     }
-    hash_ptr->bucket_size;
+    hash_ptr->bucket_size = init_bucket_size;
 
     hash_ptr->bucket =
             (struct zh_hash_node*)malloc(
                 sizeof(struct zh_hash_node) * init_bucket_size);
     hash_ptr->bucket_lock_vec =
-            (pthread_mutex_lock*)malloc(
-                sizeof(pthread_mutex_lock) * init_bucket_size);
+            (pthread_rwlock_t*)malloc(
+                sizeof(pthread_rwlock_t) * init_bucket_size);
     if (NULL == hash_ptr->bucket || NULL == hash_ptr->bucket_lock_vec) {
         goto error;
     }

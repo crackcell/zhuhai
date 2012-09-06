@@ -25,7 +25,7 @@
 
 #define ZH_CACHE_LINE_SIZE 64
 #define ZH_CACHE_LINE_ALIGN_SIZE(size) \
-    (((((SZ) - 1) / ZH_CACHE_LINE_SIZE) + 1) * ZH_CACHE_LINE_SIZE)
+    (((((size) - 1) / ZH_CACHE_LINE_SIZE) + 1) * ZH_CACHE_LINE_SIZE)
 
 uint64_t get_tid_self();
 

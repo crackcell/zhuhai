@@ -15,19 +15,17 @@ include Makefile.env
 
 all : output
 
-test :
-	make -C test
-example :
-	make -C examples
-
-output : test example
-	mkdir -p output
+output :
 	make -C src
+	make -C test
+	make -C examples
+	mkdir -p output
 
 clean :
 	rm -rf output
 	make clean -C src
 	make clean -C test
+	make clean -C examples
 
 help :
 	@echo 'Usage: make [TARGET]'
