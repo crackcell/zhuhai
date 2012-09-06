@@ -23,10 +23,7 @@ TEST_OBJ = $(patsubst %.c, %.o, $(TEST_SRC))
 
 .PHONY : all clean src check
 
-all : src $(BUILD_TARGETS)
-
-src :
-	make -C ../src clean && make -C ../src
+all : $(BUILD_TARGETS)
 
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)

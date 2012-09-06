@@ -11,14 +11,16 @@
 
 include Makefile.env
 
-.PHONY : all output clean help
+.PHONY : all output test example clean help
 
 all : output
 
 test :
 	make -C test
+example :
+	make -C examples
 
-output :
+output : test example
 	mkdir -p output
 	make -C src
 
