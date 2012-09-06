@@ -2,33 +2,24 @@
 
 /***************************************************************
  *
- * Copyright (c) 2012, Tan Menglong <tanmenglong@gmail.com>
+ * Copyright (c) 2012, crackcell <tanmenglong@gmail.com>
  *
  * This program is free software; you can redistribute it
  * and/or modify it under the terms of the GPL licence
  *
  **************************************************************/
 
-#ifndef _ZH_THREAD_H_
-#define _ZH_THREAD_H_
-
 /**
- * thread
+ * conf
  *
- * @file zh_thread.h
+ * @file zh_conf.h
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Sun Aug 26 17:33:54 2012
+ * @date Thu Sep  6 22:29:03 2012
  *
  **/
 
-#include <stdint.h>
 
-#define ZH_CACHE_LINE_SIZE 64
-#define ZH_CACHE_LINE_ALIGN_SIZE(size) \
-    (((((SZ) - 1) / ZH_CACHE_LINE_SIZE) + 1) * ZH_CACHE_LINE_SIZE)
 
-uint64_t get_tid_self();
 
-#endif /* _ZH_THREAD_H_ */
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */
