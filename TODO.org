@@ -1,6 +1,6 @@
 # -*- mode: org -*-
 
-#+TITLE: Feature List
+#+TITLE: TODO List
 #+AUTHOR: Tan Menglong
 #+EMAIL: tanmenglong AT gmail DOT com
 #+DATE: Thu Sep  6 22:24:08 2012
