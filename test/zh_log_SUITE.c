@@ -18,11 +18,12 @@
  *
  **/
 
-#include "zh_log.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <CUnit/Basic.h>
+
+#include <zh_log.h>
+#include <zh_public.h>
 
 #include "public.h"
 

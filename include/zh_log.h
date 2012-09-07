@@ -25,8 +25,6 @@
 #include <stdint.h>
 #include <pthread.h>
 
-#include "zh_public.h"
-
 #define ZH_LOG_MAX_FILE_SIZE 2045   /** in MB */
 #define ZH_LOG_MAX_FILE_NAME 1024
 #define ZH_LOG_BUFF_SIZE     2048   /** a log buff size */

@@ -20,14 +20,25 @@
 
 #include "zh_hash.h"
 
+#include "zh_public.h"
+
 static size_t g_prime_table[] = {
     11, 13, 17, 19, 23, 29, 31
     /* TODO: add more primes */
 };
 
+static int default_hash_func(uint64_t *hval1_ptr, uint64_t *hval2_ptr);
+static int default_node_free_func(void *node_ptr);
+
 zh_hash_t *zh_hash_alloc(zh_hash_func_t hash_func,
                          zh_hash_node_free_func_t node_free_func,
                          size_t init_bucket_size) {
+    if (NULL == hash_func) {
+        hash_func = default_hash_func;
+    }
+    if (NULL == node_free_func) {
+        node_free_func = default_node_free_func;
+    }
 
     struct zh_hash *hash_ptr = (struct zh_hash*)malloc(sizeof(struct zh_hash));
     if (NULL == hash_ptr) {
@@ -65,6 +76,26 @@ error:
         free(hash_ptr);
     }
     return NULL;
+}
+
+/**********************/
+/*  Private functions */
+/**********************/
+
+int default_hash_func(uint64_t *hval1_ptr, uint64_t *hval2_ptr) {
+    if (NULL == hval1_ptr || NULL == hval1_ptr) {
+        return ZH_FAIL;
+    }
+
+    return ZH_SUCC;
+}
+
+int default_node_free_func(void *node_ptr) {
+    if (NULL == node_ptr) {
+        return ZH_FAIL;
+    }
+
+    return ZH_SUCC;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

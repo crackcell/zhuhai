@@ -19,7 +19,9 @@ output :
 	make -C src
 	make -C test
 	make -C examples
-	mkdir -p output
+	mkdir -p output/lib output/include
+	cp src/libzhuhai.a output/lib
+	cp include/*.h output/include
 
 clean :
 	rm -rf output
