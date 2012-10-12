@@ -23,7 +23,13 @@
 
 #include <stdint.h>
 
+#ifdef x86_64
 #define ZH_CACHE_LINE_SIZE 64
+#endif
+#ifdef armv7l
+#define ZH_CACHE_LINE_SIZE 32
+#endif
+
 #define ZH_CACHE_LINE_ALIGN_SIZE(size) \
     (((((size) - 1) / ZH_CACHE_LINE_SIZE) + 1) * ZH_CACHE_LINE_SIZE)
 
