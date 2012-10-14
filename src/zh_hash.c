@@ -32,7 +32,8 @@ static int default_node_free_func(void *node_ptr);
 
 zh_hash_t *zh_hash_alloc(zh_hash_func_t hash_func,
                          zh_hash_node_free_func_t node_free_func,
-                         size_t init_bucket_size) {
+                         size_t init_bucket_size)
+{
     if (NULL == hash_func) {
         hash_func = default_hash_func;
     }
@@ -82,7 +83,8 @@ error:
 /*  Private functions */
 /**********************/
 
-int default_hash_func(uint64_t *hval1_ptr, uint64_t *hval2_ptr) {
+int default_hash_func(uint64_t *hval1_ptr, uint64_t *hval2_ptr)
+{
     if (NULL == hval1_ptr || NULL == hval1_ptr) {
         return ZH_FAIL;
     }
@@ -90,7 +92,8 @@ int default_hash_func(uint64_t *hval1_ptr, uint64_t *hval2_ptr) {
     return ZH_SUCC;
 }
 
-int default_node_free_func(void *node_ptr) {
+int default_node_free_func(void *node_ptr)
+{
     if (NULL == node_ptr) {
         return ZH_FAIL;
     }

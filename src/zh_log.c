@@ -59,8 +59,8 @@ static int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff);
 
 int zh_openlog(const char *log_name,
                const char *file_path, const char *file_name,
-               const int mask) {
-
+               const int mask)
+{
     snprintf(g_log_name, sizeof(g_log_name), "%s", log_name);
     g_log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
 
@@ -80,8 +80,8 @@ error:
     return ZH_FAIL;
 }
 
-int zh_openlog_r() {
-
+int zh_openlog_r()
+{
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
     struct zh_log_unit *unit_ptr =
@@ -106,8 +106,8 @@ error:
     return ZH_FAIL;
 }
 
-int zh_closelog() {
-
+int zh_closelog()
+{
     if (ZH_FAIL == __closelog_file()) {
         fprintf(stderr, "close log file fail\n");
     }
@@ -119,8 +119,8 @@ int zh_closelog() {
     return ZH_SUCC;
 }
 
-int zh_closelog_r() {
-
+int zh_closelog_r()
+{
     // in case key has not been created
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
@@ -136,7 +136,8 @@ int zh_closelog_r() {
     return ZH_SUCC;
 }
 
-int zh_writelog(const int event, const char *fmt, ...) {
+int zh_writelog(const int event, const char *fmt, ...)
+{
     int ret;
     va_list args;
     va_start(args, fmt);
@@ -159,17 +160,20 @@ int zh_writelog(const int event, const char *fmt, ...) {
 /*  Private functions */
 /**********************/
 
-void create_thread_key() {
+void create_thread_key()
+{
     pthread_key_create(&g_log_unit_key, log_unit_destructor);
 }
 
-void log_unit_destructor(void *unit_ptr) {
+void log_unit_destructor(void *unit_ptr)
+{
     if (unit_ptr != NULL) {
         free(unit_ptr);
     }
 }
 
-int __openlog_file(const char *file_path, const char *file_name) {
+int __openlog_file(const char *file_path, const char *file_name)
+{
     g_file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
     g_file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
 
@@ -215,7 +219,8 @@ error:
     return ZH_FAIL;
 }
 
-int __closelog_file() {
+int __closelog_file()
+{
     if (g_file_ptr != NULL) {
         if (g_file_ptr->fp != NULL) {
             fclose(g_file_ptr->fp);
@@ -234,7 +239,8 @@ int __closelog_file() {
 }
 
 int __vwritelog(struct zh_log_unit *unit_ptr, const int event,
-                const char *fmt, va_list args) {
+                const char *fmt, va_list args)
+{
     size_t bpos = 0;
     char buff[ZH_LOG_BUFF_SIZE];
     char time_buff[TIME_BUFF_SIZE];
@@ -288,7 +294,8 @@ int __vwritelog(struct zh_log_unit *unit_ptr, const int event,
     return __vwritelog_buff(file_ptr, buff);
 }
 
-int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff) {
+int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff)
+{
     pthread_mutex_lock(&(file_ptr->lock));
     fprintf(file_ptr->fp, "%s\n", buff);
     fflush(file_ptr->fp);
