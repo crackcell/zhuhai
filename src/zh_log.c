@@ -174,8 +174,8 @@ void log_unit_destructor(void *unit_ptr)
 
 int __openlog_file(const char *file_path, const char *file_name)
 {
-    g_file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
-    g_file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log));
+    g_file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log_file));
+    g_file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log_file));
 
     if (NULL == g_file_ptr || NULL == g_file_wf_ptr) {
         fprintf(stderr, "alloc log file fail\n");

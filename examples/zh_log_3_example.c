@@ -24,7 +24,7 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-    zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    //    zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
     zh_writelog(ZH_LOG_DEBUG, "%s", "test log");
     zh_writelog(ZH_LOG_FATAL, "%s", "test log");
     zh_closelog();

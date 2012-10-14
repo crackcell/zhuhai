@@ -25,8 +25,6 @@
 #include <unistd.h>
 #include <pthread.h>
 
-zh_log_t g_zlog;
-
 void *thread_func(void *arg_ptr) {
     zh_openlog_r();
     int count = 0;

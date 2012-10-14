@@ -11,7 +11,7 @@
 
 include ../Makefile.env
 
-BUILD_TARGETS = zh_log_1_example zh_log_2_example
+BUILD_TARGETS = zh_log_1_example zh_log_2_example zh_log_3_example
 
 INC = -I../include -I../src
 LIB = -lpthread
@@ -34,3 +34,4 @@ clean :
 check : all
 	valgrind --leak-check=full --show-reachable=yes ./zh_log_1_example
 	valgrind --leak-check=full --show-reachable=yes ./zh_log_2_example
+	valgrind --leak-check=full --show-reachable=yes ./zh_log_3_example

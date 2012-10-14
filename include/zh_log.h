@@ -43,15 +43,6 @@ struct zh_log_file {
     char file_name[ZH_LOG_MAX_FILE_NAME + 8]; /** + .log.wf */
 };
 
-struct zh_log {
-    int used;
-    int mask;
-    char log_name[ZH_LOG_MAX_FILE_NAME];
-    struct zh_log_file *file_ptr;
-    struct zh_log_file *file_wf_ptr;
-};
-typedef struct zh_log * zh_log_t;
-
 struct zh_log_unit {
     int used;
     pthread_t tid;
