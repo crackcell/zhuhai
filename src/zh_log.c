@@ -55,9 +55,9 @@ static int __closelog_file();
 
 static int __vwritelog(const int event, const char *fmt, va_list args);
 
-int zh_openlog(const char *log_name,
-               const char *file_path, const char *file_name,
-               const int mask)
+zh_ret_t zh_openlog(const char *log_name,
+                    const char *file_path, const char *file_name,
+                    const int mask)
 {
     snprintf(g_log_name, sizeof(g_log_name), "%s", log_name);
     g_log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
@@ -78,7 +78,7 @@ error:
     return ZH_FAIL;
 }
 
-int zh_openlog_r()
+zh_ret_t zh_openlog_r()
 {
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
@@ -104,7 +104,7 @@ error:
     return ZH_FAIL;
 }
 
-int zh_closelog()
+zh_ret_t zh_closelog()
 {
     if (ZH_FAIL == __closelog_file()) {
         fprintf(stderr, "close log file fail\n");
@@ -116,7 +116,7 @@ int zh_closelog()
     return ZH_SUCC;
 }
 
-int zh_closelog_r()
+zh_ret_t zh_closelog_r()
 {
     // in case key has not been created
     pthread_once(&g_log_unit_key_once, create_thread_key);
@@ -133,7 +133,7 @@ int zh_closelog_r()
     return ZH_SUCC;
 }
 
-int zh_writelog(const int event, const char *fmt, ...)
+zh_ret_t zh_writelog(const int event, const char *fmt, ...)
 {
     int ret;
     va_list args;

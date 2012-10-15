@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <pthread.h>
 
+#include "zh_public.h"
+
 #define ZH_LOG_MAX_FILE_SIZE 2045   /** in MB */
 #define ZH_LOG_MAX_FILE_NAME 1024
 #define ZH_LOG_BUFF_SIZE     2048   /** a log buff size */
@@ -52,18 +54,18 @@ struct zh_log_unit {
     struct zh_log_file *file_wf_ptr;
 };
 
-int zh_openlog(const char *log_name,
-               const char *file_path, const char *file_name,
-               const int mask);
-int zh_openlog_r();
+zh_ret_t zh_openlog(const char *log_name,
+                    const char *file_path, const char *file_name,
+                    const int mask);
+zh_ret_t zh_openlog_r();
 
-int zh_writelog(const int event, const char *format, ...);
-int zh_vwritelog(const int event, const char *format, va_list args);
+zh_ret_t zh_writelog(const int event, const char *format, ...);
+zh_ret_t zh_vwritelog(const int event, const char *format, va_list args);
 
-int zh_closelog();
-int zh_closelog_r();
+zh_ret_t zh_closelog();
+zh_ret_t zh_closelog_r();
 
-int zh_writelog(const int event, const char *fmt, ...);
+zh_ret_t zh_writelog(const int event, const char *fmt, ...);
 
 #endif /* _ZH_LOG_H_ */
 

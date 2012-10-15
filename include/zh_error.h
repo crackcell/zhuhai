@@ -9,20 +9,26 @@
  *
  **************************************************************/
 
-#ifndef _ZH_PUBLIC_H_
-#define _ZH_PUBLIC_H_
+#ifndef _ZH_ERROR_H_
+#define _ZH_ERROR_H_
 
 /**
  * 
  *
- * @file zh_public.h
+ * @file zh_error.h
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Tue Jun  5 11:12:09 2012
+ * @date Mon Oct 15 11:38:55 2012
  *
  **/
 
-#include "zh_error.h"
+typedef enum {
+    ZH_SUCC = 0,
+    ZH_FAIL = 1,
+    ZH_RETCODE_NUM,
+} zh_ret_t;
 
-#endif /* _ZH_PUBLIC_H_ */
+char *zh_strerror(int errnum);
+
+#endif /* _ZH_ERROR_H_ */
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

@@ -2,27 +2,36 @@
 
 /***************************************************************
  *
- * Copyright (c) 2012, Tan Menglong <tanmenglong@gmail.com>
+ * Copyright (c) 2012, crackcell <tanmenglong@gmail.com>
  *
  * This program is free software; you can redistribute it
  * and/or modify it under the terms of the GPL licence
  *
  **************************************************************/
 
-#ifndef _ZH_PUBLIC_H_
-#define _ZH_PUBLIC_H_
-
 /**
  * 
  *
- * @file zh_public.h
+ * @file zh_error.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Tue Jun  5 11:12:09 2012
+ * @date Mon Oct 15 11:38:44 2012
  *
  **/
 
 #include "zh_error.h"
 
-#endif /* _ZH_PUBLIC_H_ */
+static char* g_errorstr[] = {
+    "Success",         // 0
+    "General failure", // 1
+    "Unknown error"    // ZH_RETCODE_NUM
+};
+
+char *zh_strerror(int errnum)
+{
+    if (errnum < 0 || errnum >= ZH_RETCODE_NUM) {
+        return g_errorstr[ZH_RETCODE_NUM];
+    }
+    return g_errorstr[errnum];
+}
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */
