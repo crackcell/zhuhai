@@ -23,6 +23,9 @@ output :
 	cp src/libzhuhai.a output/lib
 	cp include/*.h output/include
 
+check :
+	make check -C test
+
 clean :
 	rm -rf output
 	make clean -C src

@@ -53,9 +53,7 @@ static inline int __openlog_file(const char *file_path, const char *file_name);
 static void log_unit_destructor(void *unit_ptr);
 static int __closelog_file();
 
-static int __vwritelog(struct zh_log_unit *unit_ptr, const int event,
-                       const char *fmt, va_list args);
-static int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff);
+static int __vwritelog(const int event, const char *fmt, va_list args);
 
 int zh_openlog(const char *log_name,
                const char *file_path, const char *file_name,
@@ -111,9 +109,8 @@ int zh_closelog()
     if (ZH_FAIL == __closelog_file()) {
         fprintf(stderr, "close log file fail\n");
     }
-
     if (ZH_FAIL == zh_closelog_r()) {
-        fprintf(stderr, "close log unit fail\n");
+        fprintf(stderr, "close log fail\n");
     }
 
     return ZH_SUCC;
@@ -127,8 +124,8 @@ int zh_closelog_r()
     struct zh_log_unit *unit_ptr =
             (struct zh_log_unit*)pthread_getspecific(g_log_unit_key);
     if (NULL == unit_ptr) {
-        fprintf(stderr, "close log unit fail: null\n");
-        return ZH_FAIL;
+        //fprintf(stderr, "close log unit fail: null\n");
+        return ZH_SUCC;
     }
     free(unit_ptr);
     pthread_setspecific(g_log_unit_key, NULL);
@@ -141,16 +138,7 @@ int zh_writelog(const int event, const char *fmt, ...)
     int ret;
     va_list args;
     va_start(args, fmt);
-
-    struct zh_log_unit *unit_ptr =
-            (struct zh_log_unit*)pthread_getspecific(g_log_unit_key);
-    if (NULL == unit_ptr) {
-        vfprintf(stderr, fmt, args);
-        va_end(args);
-        return ZH_SUCC;
-    }
-
-    ret = __vwritelog(unit_ptr, event, fmt, args);
+    ret = __vwritelog(event, fmt, args);
     va_end(args);
 
     return ret;
@@ -238,68 +226,83 @@ int __closelog_file()
     return ZH_SUCC;
 }
 
-int __vwritelog(struct zh_log_unit *unit_ptr, const int event,
-                const char *fmt, va_list args)
+int __vwritelog(const int event, const char *fmt, va_list args)
 {
-    size_t bpos = 0;
+    int wf;
+    size_t bpos;
+    pthread_t tid;
+    char *log_name;
+    FILE *fp;
     char buff[ZH_LOG_BUFF_SIZE];
     char time_buff[TIME_BUFF_SIZE];
-    struct zh_log_file *file_ptr = NULL;
+    struct zh_log_file *file_ptr;
+    struct zh_log_unit *unit_ptr;
 
-    buff[0] = '\0';
-    time_buff[0] = '\0';
-
-    if (unit_ptr->mask < event) {
+    unit_ptr = (struct zh_log_unit*)pthread_getspecific(g_log_unit_key);
+    if (unit_ptr != NULL && g_mask < event) {
         return ZH_FAIL;
     }
 
-    if ((unit_ptr->mask & event) == 0) {
+    if (unit_ptr != NULL && (g_mask & event) == 0) {
         return ZH_SUCC;
     }
 
+    bpos = 0;
+    buff[0] = '\0';
+
+    wf = 0;
     switch (event) {
     case ZH_LOG_FATAL:
         memcpy(&buff[bpos], STRING_FATAL, sizeof(STRING_FATAL));
-        file_ptr = unit_ptr->file_wf_ptr;
+        wf = 1;
         break;
     case ZH_LOG_WARNING:
         memcpy(&buff[bpos], STRING_WARNING, sizeof(STRING_WARNING));
-        file_ptr = unit_ptr->file_wf_ptr;
+        wf = 1;
         break;
     case ZH_LOG_NOTICE:
         memcpy(&buff[bpos], STRING_NOTICE, sizeof(STRING_NOTICE));
-        file_ptr = unit_ptr->file_ptr;
         break;
     case ZH_LOG_TRACE:
         memcpy(&buff[bpos], STRING_TRACE, sizeof(STRING_TRACE));
-        file_ptr = unit_ptr->file_ptr;
         break;
     case ZH_LOG_DEBUG:
         memcpy(&buff[bpos], STRING_DEBUG, sizeof(STRING_DEBUG));
-        file_ptr = unit_ptr->file_ptr;
         break;
     default:
         memcpy(&buff[bpos], STRING_NONE, sizeof(STRING_NONE));
-        file_ptr = unit_ptr->file_ptr;
         break;
     }
 
+    if (unit_ptr == NULL) {
+        tid = pthread_self();
+        fp = wf == 1 ? stderr : stdout;
+        log_name = "null";
+    } else {
+        tid = unit_ptr->tid;
+        file_ptr = wf == 1 ? unit_ptr->file_wf_ptr : unit_ptr->file_ptr;
+        fp = file_ptr->fp;
+        log_name = unit_ptr->log_name;
+    }
+
+    time_buff[0] = '\0';
     zh_ctime(time_buff, sizeof(time_buff));
     bpos += strlen(&buff[bpos]);
     bpos += snprintf(&buff[bpos], sizeof(buff) - bpos, " %s: %s * %lu ",
-                     time_buff, unit_ptr->log_name, unit_ptr->tid);
+                     time_buff, log_name, tid);
 
     vsnprintf(&buff[bpos], sizeof(buff) - bpos, fmt, args);
 
-    return __vwritelog_buff(file_ptr, buff);
-}
+    if (unit_ptr == NULL) {
+        fprintf(fp, "%s\n", buff);
+        fflush(fp);
+    } else {
+        pthread_mutex_lock(&(file_ptr->lock));
+        fprintf(file_ptr->fp, "%s\n", buff);
+        fflush(file_ptr->fp);
+        pthread_mutex_unlock(&(file_ptr->lock));
+    }
 
-int __vwritelog_buff(struct zh_log_file *file_ptr, const char *buff)
-{
-    pthread_mutex_lock(&(file_ptr->lock));
-    fprintf(file_ptr->fp, "%s\n", buff);
-    fflush(file_ptr->fp);
-    pthread_mutex_unlock(&(file_ptr->lock));
     return ZH_SUCC;
 }
 

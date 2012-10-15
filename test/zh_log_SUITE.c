@@ -44,7 +44,7 @@ void TEST_closelog(void) {
 }
 
 void TEST_writelog(void) {
-    CU_ASSERT(zh_writelog(ZH_LOG_DEBUG, "%s", "test log"));
+    CU_ASSERT(zh_writelog(ZH_LOG_DEBUG, "%s", "test log") != ZH_FAIL);
 }
 
 int main(int argc, char *argv[]) {
