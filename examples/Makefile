@@ -11,7 +11,8 @@
 
 include ../Makefile.env
 
-BUILD_TARGETS = zh_log_1_example zh_log_2_example zh_log_3_example
+BUILD_TARGETS = zh_log_1_example zh_log_2_example zh_log_3_example \
+				zh_linkedlist_1_example
 
 INC = -I../include -I../src
 LIB = -lpthread

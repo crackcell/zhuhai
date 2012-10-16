@@ -24,8 +24,7 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 
-uint64_t get_tid_self()
-{
+uint64_t get_tid_self() {
     uint64_t tid;
 #ifdef Darwin
     pthread_t ptid = pthread_self();

@@ -47,18 +47,18 @@ static struct zh_log_file *g_file_wf_ptr;
 
 static void create_thread_key();
 
-static inline int __openlog(const char *file_path, const char *file_name,
-                            const int mask);
-static inline int __openlog_file(const char *file_path, const char *file_name);
+static inline zh_ret_t __openlog(const char *file_path, const char *file_name,
+                                 const int mask);
+static inline zh_ret_t __openlog_file(const char *file_path,
+                                      const char *file_name);
 static void log_unit_destructor(void *unit_ptr);
-static int __closelog_file();
+static zh_ret_t __closelog_file();
 
-static int __vwritelog(const int event, const char *fmt, va_list args);
+static zh_ret_t __vwritelog(const int event, const char *fmt, va_list args);
 
 zh_ret_t zh_openlog(const char *log_name,
                     const char *file_path, const char *file_name,
-                    const int mask)
-{
+                    const int mask) {
     snprintf(g_log_name, sizeof(g_log_name), "%s", log_name);
     g_log_name[ZH_LOG_MAX_FILE_NAME - 1] = '\0';
 
@@ -78,8 +78,7 @@ error:
     return ZH_FAIL;
 }
 
-zh_ret_t zh_openlog_r()
-{
+zh_ret_t zh_openlog_r() {
     pthread_once(&g_log_unit_key_once, create_thread_key);
 
     struct zh_log_unit *unit_ptr =
@@ -104,8 +103,7 @@ error:
     return ZH_FAIL;
 }
 
-zh_ret_t zh_closelog()
-{
+zh_ret_t zh_closelog() {
     if (ZH_FAIL == __closelog_file()) {
         fprintf(stderr, "close log file fail\n");
     }
@@ -133,8 +131,7 @@ zh_ret_t zh_closelog_r()
     return ZH_SUCC;
 }
 
-zh_ret_t zh_writelog(const int event, const char *fmt, ...)
-{
+zh_ret_t zh_writelog(const int event, const char *fmt, ...) {
     int ret;
     va_list args;
     va_start(args, fmt);
@@ -148,20 +145,17 @@ zh_ret_t zh_writelog(const int event, const char *fmt, ...)
 /*  Private functions */
 /**********************/
 
-void create_thread_key()
-{
+void create_thread_key() {
     pthread_key_create(&g_log_unit_key, log_unit_destructor);
 }
 
-void log_unit_destructor(void *unit_ptr)
-{
+void log_unit_destructor(void *unit_ptr) {
     if (unit_ptr != NULL) {
         free(unit_ptr);
     }
 }
 
-int __openlog_file(const char *file_path, const char *file_name)
-{
+zh_ret_t __openlog_file(const char *file_path, const char *file_name) {
     g_file_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log_file));
     g_file_wf_ptr = (struct zh_log_file*)malloc(sizeof(struct zh_log_file));
 
@@ -207,8 +201,7 @@ error:
     return ZH_FAIL;
 }
 
-int __closelog_file()
-{
+zh_ret_t __closelog_file() {
     if (g_file_ptr != NULL) {
         if (g_file_ptr->fp != NULL) {
             fclose(g_file_ptr->fp);
@@ -226,8 +219,7 @@ int __closelog_file()
     return ZH_SUCC;
 }
 
-int __vwritelog(const int event, const char *fmt, va_list args)
-{
+zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
     int wf;
     size_t bpos;
     pthread_t tid;

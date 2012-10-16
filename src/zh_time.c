@@ -23,8 +23,7 @@
 #include <stdio.h>
 #include <time.h>
 
-char *zh_ctime(char *buff, size_t buff_size)
-{
+char *zh_ctime(char *buff, size_t buff_size) {
     time_t t;
     struct tm tm;
     time(&t);

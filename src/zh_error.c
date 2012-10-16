@@ -21,13 +21,13 @@
 #include "zh_error.h"
 
 static char* g_errorstr[] = {
-    "Success",         // 0
-    "General failure", // 1
-    "Unknown error"    // ZH_RETCODE_NUM
+    "Success",           // 0
+    "General failure",   // 1
+    "Invalid parameters",
+    "Unknown error"      // ZH_RETCODE_NUM
 };
 
-char *zh_strerror(int errnum)
-{
+char *zh_strerror(int errnum) {
     if (errnum < 0 || errnum >= ZH_RETCODE_NUM) {
         return g_errorstr[ZH_RETCODE_NUM];
     }

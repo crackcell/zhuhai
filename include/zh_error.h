@@ -23,7 +23,8 @@
 
 typedef enum {
     ZH_SUCC = 0,
-    ZH_FAIL = 1,
+    ZH_FAIL,
+    ZH_ERR_PARAM,
     ZH_RETCODE_NUM,
 } zh_ret_t;
 
