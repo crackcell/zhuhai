@@ -74,6 +74,37 @@ zh_ret_t zh_linkedlist_push_back(zh_linkedlist_t *l, void *v) {
     return ZH_SUCC;
 }
 
+zh_ret_t zh_linkedlist_delete(zh_linkedlist_t *l, const int i) {
+    if (!l) {
+        return ZH_ERR_PARAM;
+    }
+    if (!l->head_ptr) {
+        return ZH_SUCC;
+    }
+
+    int k;
+    struct zh_linkedlist_node *n = l->head_ptr;
+    struct zh_linkedlist_node *p = NULL;
+    for (k = 0; k < i && n; k++) {
+        p = n;
+        n = n->next_ptr;
+    }
+
+    if (k == i && n) {
+        if (p) {
+            p->next_ptr = n->next_ptr;
+        } else {
+            l->head_ptr = n->next_ptr;
+        }
+        free(n);
+        l->size--;
+    } else {
+        return ZH_FAIL;
+    }
+
+    return ZH_SUCC;
+}
+
 void *zh_linkedlist_front(zh_linkedlist_t *l) {
     if (!l) {
         return NULL;
@@ -115,7 +146,7 @@ zh_ret_t zh_linkedlist_clear(zh_linkedlist_t *l) {
         l->head_ptr = n->next_ptr;
         free(n);
     }
-    l->size = 0;
+    memset(l, 0, sizeof(zh_linkedlist_t));
 
     return ZH_SUCC;
 }

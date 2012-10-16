@@ -33,48 +33,91 @@ struct node {
 
 zh_linkedlist_t g_list;
 
-int init_suite(void) {
+int init_suite() {
     return 0;
 }
 
-int clean_suite(void) {
+int clean_suite() {
     return 0;
 }
 
-void TEST_init(void) {
-    CU_ASSERT(zh_linkedlist_init(&g_list) != ZH_FAIL);
+void TEST_init() {
+    CU_ASSERT(zh_linkedlist_init(&g_list) == ZH_SUCC);
 }
 
-void TEST_clear(void) {
-    CU_ASSERT(zh_linkedlist_clear(&g_list) != ZH_FAIL);
+void TEST_clear() {
+    CU_ASSERT(zh_linkedlist_clear(&g_list) == ZH_SUCC);
 }
 
-void TEST_push_back(void) {
+void TEST_push_back() {
     int i;
     struct node *n;
+    zh_linkedlist_clear(&g_list);
     for (i = 0; i < 10; i++) {
         n = (struct node*)malloc(sizeof(struct node));
         n->val = i;
-        CU_ASSERT(zh_linkedlist_push_back(&g_list, n)  != ZH_FAIL);
+        CU_ASSERT(zh_linkedlist_push_back(&g_list, n)  == ZH_SUCC);
     }
     for (i = 0; i < 10; i++) {
         n = (struct node*)zh_linkedlist_at(&g_list, i);
         CU_ASSERT(n->val == i);
     }
+    zh_linkedlist_clear(&g_list);
 }
 
-void TEST_push_front(void) {
+void TEST_push_front() {
     int i;
     struct node *n;
+    zh_linkedlist_clear(&g_list);
     for (i = 0; i < 10; i++) {
         n = (struct node*)malloc(sizeof(struct node));
         n->val = i;
-        CU_ASSERT(zh_linkedlist_push_front(&g_list, n)  != ZH_FAIL);
+        CU_ASSERT(zh_linkedlist_push_front(&g_list, n)  == ZH_SUCC);
     }
     for (i = 9; i <= 0; i--) {
         n = (struct node*)zh_linkedlist_at(&g_list, i);
         CU_ASSERT(n->val == i);
     }
+    zh_linkedlist_clear(&g_list);
+}
+
+void TEST_front() {
+    zh_linkedlist_clear(&g_list);
+    struct node *n = (struct node*)malloc(sizeof(struct node));
+    n->val = 100;
+    CU_ASSERT(zh_linkedlist_push_front(&g_list, n) == ZH_SUCC);
+    //    n = (struct node*)zh_linkedlist_front(&g_list);
+    CU_ASSERT(n->val == 100);
+    zh_linkedlist_clear(&g_list);
+}
+
+void TEST_back() {
+    zh_linkedlist_clear(&g_list);
+    struct node *n = (struct node*)malloc(sizeof(struct node));
+    n->val = 100;
+    CU_ASSERT(zh_linkedlist_push_front(&g_list, n) == ZH_SUCC);
+    n = (struct node*)zh_linkedlist_back(&g_list);
+    CU_ASSERT(n->val == 100);
+    zh_linkedlist_clear(&g_list);
+}
+
+void TEST_delete() {
+    zh_linkedlist_clear(&g_list);
+    int i, k;
+    int s = 3;
+    k = 1;
+    struct node *n;
+    for (i = 0;i < s; i++) {
+        n = (struct node*)malloc(sizeof(struct node));
+        n->val = i;
+        zh_linkedlist_push_back(&g_list, n);
+    }
+    CU_ASSERT(zh_linkedlist_delete(&g_list, k) == ZH_SUCC);
+    CU_ASSERT(g_list.size == s - 1);
+    n = (struct node*)zh_linkedlist_at(&g_list, k);
+    CU_ASSERT(n != NULL);
+    CU_ASSERT(n->val == k + 1);
+    zh_linkedlist_clear(&g_list);
 }
 
 int main(int argc, char *argv[]) {
@@ -95,6 +138,9 @@ int main(int argc, char *argv[]) {
         {"init", suite_ptr, TEST_init},
         {"push_back", suite_ptr, TEST_push_back},
         {"push_front", suite_ptr, TEST_push_front},
+        {"front", suite_ptr, TEST_front},
+        {"back", suite_ptr, TEST_back},
+        {"delete", suite_ptr, TEST_delete},
         {"clear", suite_ptr, TEST_clear},
     };
 

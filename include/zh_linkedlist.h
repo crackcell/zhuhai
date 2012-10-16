@@ -31,14 +31,18 @@ typedef struct {
     int size;
     struct zh_linkedlist_node *head_ptr;
     struct zh_linkedlist_node *tail_ptr;
+    struct zh_linkedlist_node *free_ptr;
 } zh_linkedlist_t;
 
 zh_ret_t zh_linkedlist_init(zh_linkedlist_t *l);
+
 zh_ret_t zh_linkedlist_push_front(zh_linkedlist_t *l, void *v);
 zh_ret_t zh_linkedlist_push_back(zh_linkedlist_t *l, void *v);
 
-void *zh_linkedlist_front(zh_linkedlist_t *l);
+zh_ret_t zh_linkedlist_delete(zh_linkedlist_t *l, const int i);
+
 void *zh_linkedlist_back(zh_linkedlist_t *l);
+void *zh_linkedlist_front(zh_linkedlist_t *l);
 
 void *zh_linkedlist_at(zh_linkedlist_t *l, const int i);
 

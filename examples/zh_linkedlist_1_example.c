@@ -33,19 +33,23 @@ int main(int argc, char *argv[]) {
     zh_linkedlist_init(&l);
 
     int i;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 3; i++) {
         struct node *n = (struct node*)malloc(sizeof(struct node));
         n->val = i;
         zh_linkedlist_push_back(&l, n);
     }
     printf("%d\n", l.size);
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 3; i++) {
         struct node *n = (struct node*)malloc(sizeof(struct node));
         n->val = i;
         zh_linkedlist_push_front(&l, n);
     }
     printf("%d\n", l.size);
+
+    printf("delete\n");
+    zh_linkedlist_delete(&l, 1);
+    printf("size=%d\n", l.size);
 
     printf("test at()\n");
     for (i  = 0; i < l.size; i++) {
