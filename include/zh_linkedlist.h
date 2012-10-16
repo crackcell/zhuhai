@@ -39,6 +39,7 @@ zh_ret_t zh_linkedlist_push_back(zh_linkedlist_t *l, void *v);
 
 void *zh_linkedlist_front(zh_linkedlist_t *l);
 void *zh_linkedlist_back(zh_linkedlist_t *l);
+
 void *zh_linkedlist_at(zh_linkedlist_t *l, const int i);
 
 zh_ret_t zh_linkedlist_clear(zh_linkedlist_t *l);

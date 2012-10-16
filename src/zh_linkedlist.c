@@ -41,10 +41,8 @@ zh_ret_t zh_linkedlist_push_front(zh_linkedlist_t *l, void *v) {
         return ZH_ERR_PARAM;
     }
 
-    struct zh_linkedlist_node *n =
-            (struct zh_linkedlist_node*)malloc(sizeof(struct zh_linkedlist_node));
-    ((struct zh_linkedlist_node*)v)->next_ptr = NULL;
-    memcpy(n, v, sizeof(struct zh_linkedlist_node));
+    struct zh_linkedlist_node *n = (struct zh_linkedlist_node*)v;
+    n->next_ptr = NULL;
     if (l->head_ptr == NULL) {
         l->head_ptr = n;
         l->tail_ptr = n;
@@ -62,11 +60,8 @@ zh_ret_t zh_linkedlist_push_back(zh_linkedlist_t *l, void *v) {
         return ZH_ERR_PARAM;
     }
 
-    struct zh_linkedlist_node *n =
-            (struct zh_linkedlist_node*)malloc(sizeof(struct zh_linkedlist_node));
-    ((struct zh_linkedlist_node*)v)->next_ptr = NULL;
-    memcpy(n, v, sizeof(struct zh_linkedlist_node));
-
+    struct zh_linkedlist_node *n = (struct zh_linkedlist_node*)v;
+    n->next_ptr = NULL;
     if (l->tail_ptr == NULL) {
         l->head_ptr = n;
         l->tail_ptr = n;
@@ -120,6 +115,7 @@ zh_ret_t zh_linkedlist_clear(zh_linkedlist_t *l) {
         l->head_ptr = n->next_ptr;
         free(n);
     }
+    l->size = 0;
 
     return ZH_SUCC;
 }

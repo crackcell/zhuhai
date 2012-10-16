@@ -19,6 +19,7 @@
  **/
 
 #include <stdio.h>
+#include <malloc.h>
 #include <zh_linkedlist.h>
 
 struct node {
@@ -33,20 +34,32 @@ int main(int argc, char *argv[]) {
 
     int i;
     for (i = 0; i < 10; i++) {
-        struct node n;
-        n.val = i;
-        zh_linkedlist_push_back(&l, &n);
+        struct node *n = (struct node*)malloc(sizeof(struct node));
+        n->val = i;
+        zh_linkedlist_push_back(&l, n);
     }
     printf("%d\n", l.size);
+
     for (i = 0; i < 10; i++) {
-        struct node n;
-        n.val = i;
-        zh_linkedlist_push_front(&l, &n);
+        struct node *n = (struct node*)malloc(sizeof(struct node));
+        n->val = i;
+        zh_linkedlist_push_front(&l, n);
     }
     printf("%d\n", l.size);
+
+    printf("test at()\n");
+    for (i  = 0; i < l.size; i++) {
+        struct node *n;
+        n = (struct node*)zh_linkedlist_at(&l, i);
+        if (n) {
+            printf("%d ", n->val);
+        } else {
+            printf("null ");
+        }
+    }
+    printf("\n");
 
     zh_linkedlist_clear(&l);
-
     return 0;
 }
 
