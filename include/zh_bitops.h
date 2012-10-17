@@ -23,17 +23,17 @@
 
 #define LOCK "lock ; "
 
-static inline void zh_set_bit(volatile void *addr, const int nr) {
-    __asm__ __volatile__  ("bts %1, %0"
-             : "=m" (*((size_t*)addr))
-             : "Ir" (nr)
+static inline void zh_set_bit(volatile void *addr, const int pos) {
+    __asm__ __volatile__  ("bts %[pos], %[addr]"
+             : [addr] "=m" (*((size_t*)addr))
+             : [pos] "Ir" (pos)
              : "memory");
 }
 
-static inline void zh_clear_bit(volatile void *addr, const int nr) {
-    __asm__ __volatile__  ("btr %1, %0"
-             : "=m" (*((size_t*)addr))
-             : "Ir" (nr)
+static inline void zh_clear_bit(volatile void *addr, const int pos) {
+    __asm__ __volatile__  ("btr %[pos], %[addr]"
+             : [addr] "=m" (*((size_t*)addr))
+             : [pos] "Ir" (pos)
              : "memory");
 }
 

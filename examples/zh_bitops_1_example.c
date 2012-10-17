@@ -19,16 +19,20 @@
  **/
 
 #include <stdio.h>
+#include <time.h>
 #include <zh_bitops.h>
+
+static inline void set_bit(void *addr, const int pos) {
+    *((size_t*)addr) |= (1 << pos);
+}
 
 int main(int argc, char *argv[]) {
     long int a = 0;
-    zh_set_bit(&a, 1);
-    printf("%ld\n", a);
-
-    zh_clear_bit(&a, 1);
-    printf("%ld\n", a);
-
+    int i;
+    long int c = 1000000000;
+    for (i = 0; i < c; i++) {
+        zh_set_bit(&a, 1);
+    }
     return 0;
 }
 
