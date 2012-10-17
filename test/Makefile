@@ -11,7 +11,7 @@
 
 include ../Makefile.env
 
-BUILD_TARGETS = zh_log_SUITE zh_linkedlist_SUITE
+BUILD_TARGETS = zh_log_SUITE zh_linkedlist_SUITE zh_bitops_SUITE
 
 INC = -I../include -I../src
 LIB = -lcunit -lpthread

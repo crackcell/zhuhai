@@ -47,8 +47,6 @@ static struct zh_log_file *g_file_wf_ptr;
 
 static void create_thread_key();
 
-static inline zh_ret_t __openlog(const char *file_path, const char *file_name,
-                                 const int mask);
 static inline zh_ret_t __openlog_file(const char *file_path,
                                       const char *file_name);
 static void log_unit_destructor(void *unit_ptr);

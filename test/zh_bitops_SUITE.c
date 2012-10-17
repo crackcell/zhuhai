@@ -10,9 +10,9 @@
  **************************************************************/
 
 /**
- * Unittest for zh_log
+ * Unittest for zh_bitops
  *
- * @file zh_log_SUITE.c
+ * @file zh_bitops_SUITE.c
  * @author Tan Menglong <tanmenglong@gmail.com>
  * @date Sun Aug 26 20:01:03 2012
  *
@@ -22,7 +22,7 @@
 #include <string.h>
 #include <CUnit/Basic.h>
 
-#include <zh_log.h>
+#include <zh_bitops.h>
 
 #include "public.h"
 
@@ -34,16 +34,16 @@ int clean_suite(void) {
     return 0;
 }
 
-void TEST_openlog(void) {
-    CU_ASSERT(zh_openlog("test", ".", "test_file", ZH_LOG_ALL) != ZH_FAIL);
+void TEST_set_bit() {
+    int d = 0;
+    zh_set_bit(&d, 1);
+    CU_ASSERT(d == 2);
 }
 
-void TEST_closelog(void) {
-    CU_ASSERT(zh_closelog() != ZH_FAIL);
-}
-
-void TEST_writelog(void) {
-    CU_ASSERT(zh_writelog(ZH_LOG_DEBUG, "%s", "test log") != ZH_FAIL);
+void TEST_clear_bit() {
+    int d = 2;
+    zh_clear_bit(&d, 1);
+    CU_ASSERT(d == 0);
 }
 
 int main(int argc, char *argv[]) {
@@ -61,9 +61,8 @@ int main(int argc, char *argv[]) {
     }
 
     struct unittest test_list[] = {
-        {"openlog", suite_ptr, TEST_openlog},
-        {"writelog", suite_ptr, TEST_writelog},
-        {"closelog", suite_ptr, TEST_closelog},
+        {"set_bit", suite_ptr, TEST_set_bit},
+        {"clear_bit", suite_ptr, TEST_clear_bit},
     };
 
     size_t i;

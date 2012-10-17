@@ -2,34 +2,34 @@
 
 /***************************************************************
  *
- * Copyright (c) 2012, Tan Menglong <tanmenglong@gmail.com>
+ * Copyright (c) 2012, crackcell <tanmenglong@gmail.com>
  *
  * This program is free software; you can redistribute it
  * and/or modify it under the terms of the GPL licence
  *
  **************************************************************/
 
-#ifndef _ZH_THR_QUEUE_H_
-#define _ZH_THR_QUEUE_H_
-
 /**
- * Lookfree queue between threads
+ * 
  *
- * @file zh_thr_queue.h
+ * @file zh_bitops_1_example.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Fri Sep  7 14:35:47 2012
+ * @date Wed Oct 17 04:09:28 2012
  *
  **/
 
 #include <stdio.h>
+#include <zh_bitops.h>
 
-#define ZH_THR_QUEUE_MAX_NAME 256
+int main(int argc, char *argv[]) {
+    long int a = 0;
+    zh_set_bit(&a, 1);
+    printf("%ld\n", a);
 
-struct zh_thr_queue {
-    char queue_name[ZH_THR_QUEUE_MAX_NAME];
-};
-typedef struct zh_thr_queue zh_thr_queue_t;
+    zh_clear_bit(&a, 1);
+    printf("%ld\n", a);
 
-#endif /* _ZH_THR_QUEUE_H_ */
+    return 0;
+}
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

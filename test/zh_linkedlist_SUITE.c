@@ -144,7 +144,8 @@ int main(int argc, char *argv[]) {
         {"clear", suite_ptr, TEST_clear},
     };
 
-    for (size_t i = 0; i < sizeof(test_list) / sizeof(struct unittest); i++) {
+    size_t i;
+    for (i = 0; i < sizeof(test_list) / sizeof(struct unittest); i++) {
         if (NULL == CU_add_test(test_list[i].suite_ptr,
                                 test_list[i].test_name,
                                 test_list[i].test_func)) {

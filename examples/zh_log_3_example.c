@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
     zh_writelog(ZH_LOG_DEBUG, "%s", "test log");
     zh_writelog(ZH_LOG_FATAL, "%s", "test log");
     zh_closelog();
+
+    return 0;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

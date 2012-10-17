@@ -50,6 +50,8 @@ int main(int argc, char *argv[]) {
     }
 
     zh_closelog();
+
+    return 0;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */
