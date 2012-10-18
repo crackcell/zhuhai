@@ -24,17 +24,29 @@
 #define LOCK "lock ; "
 
 static inline void zh_set_bit(volatile void *addr, const int pos) {
-    __asm__ __volatile__  ("bts %[pos], %[addr]"
-             : [addr] "=m" (*((size_t*)addr))
-             : [pos] "Ir" (pos)
-             : "memory");
+    __asm__ __volatile__ (
+        "bts %[p], %[a]"
+        : [a] "=m" (*((size_t*)addr))
+        : [p] "Ir" (pos)
+        : "memory");
 }
 
 static inline void zh_clear_bit(volatile void *addr, const int pos) {
-    __asm__ __volatile__  ("btr %[pos], %[addr]"
-             : [addr] "=m" (*((size_t*)addr))
-             : [pos] "Ir" (pos)
-             : "memory");
+    __asm__ __volatile__ (
+        "btr %[p], %[a]"
+        : [a] "=m" (*((size_t*)addr))
+        : [p] "Ir" (pos)
+        : "memory");
+}
+
+static inline int zh_test_bit(volatile void *addr, const int pos) {
+    unsigned char c;
+    __asm__ __volatile__(
+        "bt %[p], %[a]; setb %[c]"
+        : [c] "=qm" (c)
+        : [a] "m" (*((size_t*)addr)), [p] "r" (pos)
+        : "memory");
+    return c != 0;
 }
 
 #endif /* _ZH_BITOPS_H_ */

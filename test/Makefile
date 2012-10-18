@@ -31,5 +31,7 @@ clean :
 %_SUITE : %_SUITE.o
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
-check : all
-	valgrind --leak-check=full --show-reachable=yes ./zh_log_SUITE
+check : $(BUILD_TARGETS)
+	for file in $(wildcard *SUITE); \
+		do valgrind --leak-check=full ./$$file; \
+	done;

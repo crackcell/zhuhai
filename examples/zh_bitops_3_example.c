@@ -12,29 +12,19 @@
 /**
  * 
  *
- * @file zh_atomic_1_example.c
+ * @file zh_bitops_1_example.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Thu Oct 18 03:44:42 2012
+ * @date Wed Oct 17 04:09:28 2012
  *
  **/
 
 #include <stdio.h>
-#include <zh_atomic.h>
+#include <time.h>
+#include <zh_bitops.h>
 
 int main(int argc, char *argv[]) {
-    zh_atomic_t a;
-    zh_atomic_set(&a, 0);
-    printf("%d\n", a.counter);
-    zh_atomic_set(&a, 1000);
-    printf("%d\n", a.counter);
-    zh_atomic_inc(&a);
-    printf("%d\n", a.counter);
-    int k = zh_atomic_add_return(&a, 2);
-    printf("%d\n", k);
-
-    zh_atomic_set(&a, 1);
-    printf("is 0: %d\n", zh_atomic_dec_test(&a, 1));
-
+    long int a = 2;
+    printf("%d\n", zh_test_bit(&a, 0));
     return 0;
 }
 

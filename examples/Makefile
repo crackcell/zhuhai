@@ -11,11 +11,6 @@
 
 include ../Makefile.env
 
-BUILD_TARGETS = zh_log_1_example zh_log_2_example zh_log_3_example \
-				zh_linkedlist_1_example \
-				zh_bitops_1_example zh_bitops_2_example \
-				zh_atomic_1_example
-
 INC = -I../include -I../src
 LIB = -lpthread
 
@@ -23,6 +18,7 @@ OBJ = ../src/libzhuhai.a
 
 TEST_SRC = $(wildcard *_example.c)
 TEST_OBJ = $(patsubst %.c, %.o, $(TEST_SRC))
+BUILD_TARGETS = $(patsubst %.c, %, $(TEST_SRC))
 
 .PHONY : all clean src check
 
@@ -35,6 +31,6 @@ clean :
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
 check : all
-	valgrind --leak-check=full --show-reachable=yes ./zh_log_1_example
-	valgrind --leak-check=full --show-reachable=yes ./zh_log_2_example
-	valgrind --leak-check=full --show-reachable=yes ./zh_log_3_example
+	for file in $(wildcard *example); \
+		do valgrind --leak-check=full ./$$file; \
+	done;
