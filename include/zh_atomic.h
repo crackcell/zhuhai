@@ -31,14 +31,14 @@ typedef struct { volatile int counter; } zh_atomic_t;
 
 static inline void zh_atomic_add(zh_atomic_t *a, int v) {
     __asm__ __volatile__(
-        LOCK "addl %[a] %[v]"
+        LOCK "addl %[v], %[a]"
         : [a] "=m" (a->counter)
         : [v] "ir" (v), "m" (a->counter));
 }
 
 static inline void zh_atomic_sub(zh_atomic_t *a, int v) {
     __asm__ __volatile__(
-        LOCK "subl %[a], %[v]"
+        LOCK "subl %[v], %[a]"
         : [a] "=m" (a->counter)
         : [v] "ir" (v), "m" (a->counter));
 }

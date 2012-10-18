@@ -23,6 +23,9 @@ output :
 	cp src/libzhuhai.a output/lib
 	cp include/*.h output/include
 
+test :
+	make test -C test
+
 check :
 	make check -C test
 

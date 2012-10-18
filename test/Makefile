@@ -11,19 +11,26 @@
 
 include ../Makefile.env
 
-BUILD_TARGETS = zh_log_SUITE zh_linkedlist_SUITE zh_bitops_SUITE
-
 INC = -I../include -I../src
 LIB = -lcunit -lpthread
 
 OBJ = ../src/libzhuhai.a
 
-TEST_SRC = $(wildcard *_test.c)
+TEST_SRC = $(wildcard *_SUITE.c)
 TEST_OBJ = $(patsubst %.c, %.o, $(TEST_SRC))
+BUILD_TARGETS = $(patsubst %.c, %, $(TEST_SRC))
 
 .PHONY : all clean src check
 
 all : $(BUILD_TARGETS)
+
+a :
+	echo $(BUILD_TARGETS)
+
+test : 
+	for file in $(wildcard *SUITE); \
+		do ./$$file; \
+	done;
 
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)

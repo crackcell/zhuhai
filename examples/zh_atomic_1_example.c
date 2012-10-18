@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
     zh_atomic_set(&a, 1);
     printf("is 0: %d\n", zh_atomic_dec_test(&a, 1));
 
+    zh_atomic_add(&a, 1);
+
     return 0;
 }
 

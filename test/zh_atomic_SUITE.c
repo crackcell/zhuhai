@@ -10,19 +10,18 @@
  **************************************************************/
 
 /**
- * Unittest for zh_bitops
+ * Unittest for zh_atomic
  *
- * @file zh_bitops_SUITE.c
+ * @file zh_atomic_SUITE.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Sun Aug 26 20:01:03 2012
+ * @date Thu Oct 18 10:45:54 2012
  *
  **/
 
 #include <stdio.h>
 #include <string.h>
 #include <CUnit/Basic.h>
-
-#include <zh_bitops.h>
+#include <zh_atomic.h>
 
 #include "public.h"
 
@@ -34,24 +33,24 @@ int clean_suite(void) {
     return 0;
 }
 
-void TEST_set_bit() {
-    int d = 0;
-    zh_set_bit(&d, 1);
-    CU_ASSERT(d == 2);
+void TEST_set() {
+    zh_atomic_t a;
+    zh_atomic_set(&a, 12);
+    CU_ASSERT(zh_atomic_get(&a) == 12);
 }
 
-void TEST_clear_bit() {
-    int d = 2;
-    zh_clear_bit(&d, 1);
-    CU_ASSERT(d == 0);
+void TEST_add() {
+    zh_atomic_t a;
+    zh_atomic_set(&a, 12);
+    zh_atomic_add(&a, 10);
+    CU_ASSERT(zh_atomic_get(&a) == 22);
 }
 
-void TEST_test_bit() {
-    int c = 0xfff;
-    int i;
-    for (i = 0; i < c; i++) {
-        CU_ASSERT((i & 1) == zh_test_bit(&i, 0));
-    }
+void TEST_sub() {
+    zh_atomic_t a;
+    zh_atomic_set(&a, 12);
+    zh_atomic_sub(&a, 10);
+    CU_ASSERT(zh_atomic_get(&a) == 2);
 }
 
 int main(int argc, char *argv[]) {
@@ -69,9 +68,9 @@ int main(int argc, char *argv[]) {
     }
 
     struct unittest test_list[] = {
-        {"set_bit", suite_ptr, TEST_set_bit},
-        {"clear_bit", suite_ptr, TEST_clear_bit},
-        {"test_bit", suite_ptr, TEST_test_bit},
+        {"set", suite_ptr, TEST_set},
+        {"add", suite_ptr, TEST_add},
+        {"sub", suite_ptr, TEST_sub},
     };
 
     size_t i;
