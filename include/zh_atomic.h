@@ -27,7 +27,20 @@
 
 #define LOCK "lock ; "
 
-typedef struct { volatile int counter; } zh_atomic_t;
+typedef struct { int counter; } zh_atomic_t;
+
+#define ZH_ATOMIC_INIT(v) { (v) }
+
+static inline int zh_atomic_read(zh_atomic_t *a) {
+    return (*(volatile int *)&(a)->counter);
+}
+
+static inline void zh_atomic_set(zh_atomic_t *a, int v) {
+    a->counter = v;
+}
+
+#define zh_atomic_inc_return(a) (zh_atomic_add_return(a, 1))
+#define zh_atomic_dec_return(a) (zh_atomic_sub_return(a, 1))
 
 static inline void zh_atomic_add(zh_atomic_t *a, int v) {
     __asm__ __volatile__(
@@ -41,6 +54,20 @@ static inline void zh_atomic_sub(zh_atomic_t *a, int v) {
         LOCK "subl %[v], %[a]"
         : [a] "=m" (a->counter)
         : [v] "ir" (v), "m" (a->counter));
+}
+
+static inline void zh_atomic_inc(zh_atomic_t *a) {
+    __asm__ __volatile__(
+        LOCK "incl %[a]"
+        : [a] "=m" (a->counter)
+        : "m" (a->counter));
+}
+
+static inline void zh_atomic_dec(zh_atomic_t *a) {
+    __asm__ __volatile__(
+        LOCK "decl %[a]"
+        : [a] "=m" (a->counter)
+        : "m" (a->counter));
 }
 
 static inline int zh_atomic_add_return(zh_atomic_t *a, int v) {
@@ -58,19 +85,7 @@ static inline int zh_atomic_sub_return(zh_atomic_t *a, int v) {
     return zh_atomic_add_return(a, -v);
 }
 
-static inline void zh_atomic_inc(zh_atomic_t *a) {
-    __asm__ __volatile__(
-        LOCK "incl %[a]"
-        : [a] "=m" (a->counter)
-        : "m" (a->counter));
-}
-
-static inline void zh_atomic_dec(zh_atomic_t *a) {
-    __asm__ __volatile__(
-        LOCK "decl %[a]"
-        : [a] "=m" (a->counter)
-        : "m" (a->counter));
-}
+static inline int zh_atomic_inc_and_test(zh_atomic_t *a, int v) {return 0;}
 
 /**
  * zh_atomic_add_test - decrease and test if 0
@@ -83,7 +98,7 @@ static inline void zh_atomic_dec(zh_atomic_t *a) {
  * @author Tan Menglong
  * @date Thu Oct 18 04:52:09 2012
  */
-static inline int zh_atomic_dec_test(zh_atomic_t *a, int v) {
+static inline int zh_atomic_dec_and_test(zh_atomic_t *a, int v) {
     unsigned char c;
     __asm__ __volatile__(
         LOCK "decl %[a]; sete %[c]"
@@ -93,13 +108,34 @@ static inline int zh_atomic_dec_test(zh_atomic_t *a, int v) {
     return c != 0;
 }
 
-static inline int zh_atomic_inc_test(zh_atomic_t *a, int v) {return 0;}
+static inline int zh_atomic_sub_and_test(zh_atomic_t *a, int v) {
+    return 0;
+}
+
 static inline int zh_atomic_add_negative(zh_atomic_t *a, int v) {return 0;}
 
-#define zh_atomic_get(a) ((a)->counter)
-#define zh_atomic_set(a, v) (((a)->counter) = (v))
-#define zh_atomic_inc_return(a) (zh_atomic_add_return(a, 1))
-#define zh_atomic_dec_return(a) (zh_atomic_sub_return(a, 1))
+static inline int zh_atomic_xchg(zh_atomic_t *a, int v) {
+    return 0;
+}
+
+static inline int zh_atomic_cmpxchg(zh_atomic_t *a, int oldv, int newv) {
+    return 0;
+}
+
+/**
+ * zh_atomic_add_unless - adds v to a if v not equals u
+ *
+ * @param [in] param_name : param_type
+ *   param_description
+ * @return
+ *   0: a not equal to u
+ *   1: a is equal to u
+* @author Tan Menglong
+* @date Thu Oct 18 17:18:59 2012
+*/
+static inline int zh_atomic_add_unless(zh_atomic_t *a, int v, int u) {
+    return 0;
+}
 
 #endif /* _ZH_ATOMIC_H_ */
 

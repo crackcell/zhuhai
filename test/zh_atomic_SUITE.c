@@ -36,21 +36,21 @@ int clean_suite(void) {
 void TEST_set() {
     zh_atomic_t a;
     zh_atomic_set(&a, 12);
-    CU_ASSERT(zh_atomic_get(&a) == 12);
+    CU_ASSERT(zh_atomic_read(&a) == 12);
 }
 
 void TEST_add() {
     zh_atomic_t a;
     zh_atomic_set(&a, 12);
     zh_atomic_add(&a, 10);
-    CU_ASSERT(zh_atomic_get(&a) == 22);
+    CU_ASSERT(zh_atomic_read(&a) == 22);
 }
 
 void TEST_sub() {
     zh_atomic_t a;
     zh_atomic_set(&a, 12);
     zh_atomic_sub(&a, 10);
-    CU_ASSERT(zh_atomic_get(&a) == 2);
+    CU_ASSERT(zh_atomic_read(&a) == 2);
 }
 
 int main(int argc, char *argv[]) {

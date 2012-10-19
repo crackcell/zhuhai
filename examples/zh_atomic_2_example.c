@@ -31,7 +31,7 @@ int a() {
     int i;
     zh_atomic_set(&a, g_count);
     for (i = 0; i < g_count; i++) {
-        k = zh_atomic_dec_test(&a, 1);
+        k = zh_atomic_dec_and_test(&a, 1);
     }
     return k;
 }
