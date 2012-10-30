@@ -24,6 +24,7 @@ output :
 	cp include/*.h output/include
 
 test :
+	make -C test
 	make test -C test
 
 check :
