@@ -23,7 +23,7 @@ OBJ = $(patsubst %.c, %.o, $(SRC))
 all : $(BUILD_TARGETS)
 
 libzhuhai.a : $(OBJ)
-ifeq ($(ARCH), Darwin)
+ifeq ($(OS), Darwin)
 	libtool -static -o $@ *.o
 else
 	ar -cr -o $@ *.o

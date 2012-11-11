@@ -21,7 +21,7 @@
 #include "zh_linkedlist.h"
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 zh_ret_t zh_linkedlist_init(zh_linkedlist_t *l) {

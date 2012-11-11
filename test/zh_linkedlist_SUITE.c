@@ -19,7 +19,7 @@
  **/
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <CUnit/Basic.h>
 #include <zh_linkedlist.h>

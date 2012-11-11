@@ -279,7 +279,7 @@ zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
     zh_ctime(time_buff, sizeof(time_buff));
     bpos += strlen(&buff[bpos]);
     bpos += snprintf(&buff[bpos], sizeof(buff) - bpos, " %s: %s * %lu ",
-                     time_buff, log_name, tid);
+                     time_buff, log_name, (unsigned long)tid);
 
     vsnprintf(&buff[bpos], sizeof(buff) - bpos, fmt, args);
 
