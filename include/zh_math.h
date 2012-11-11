@@ -23,12 +23,15 @@
 
 #include <math.h>
 
-//////////////////////// double compare
+//////////////////////// double compare: use relative error
 
-static const double zh_double_epsilon = 0.00001;
+static const double zh_double_max_epsilon = 0.000001;
 
 static inline int zh_compare_double(double a, double b) {
-    return fabs(a - b) < zh_double_epsilon;
+    if (a == b) {
+        return 1;
+    }
+    return fabs(a - b) / b < zh_double_max_epsilon;
 }
 
 /////////////////////// calculate log() function by looking up table
