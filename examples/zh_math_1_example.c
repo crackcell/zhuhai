@@ -9,23 +9,21 @@
  *
  **************************************************************/
 
-#ifndef _ZH_PUBLIC_H_
-#define _ZH_PUBLIC_H_
-
 /**
  * 
  *
- * @file zh_public.h
+ * @file zh_math_1_example.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Tue Jun  5 11:12:09 2012
+ * @date Sun Nov 11 22:58:08 2012
  *
  **/
 
-#include "zh_error.h"
+#include <stdio.h>
+#include <zh_math.h>
 
-#define likely(x)       __builtin_expect(!!(x), 1)
-#define unlikely(x)     __builtin_expect(!!(x), 0)
-
-#endif /* _ZH_PUBLIC_H_ */
+int main(int argc, char *argv[]) {
+    printf("%f\n", zh_log_int(100000));
+    return 0;
+}
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */
