@@ -23,6 +23,10 @@
 
 #include <math.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //////////////////////// double compare: use relative error
 
 static const double zh_double_max_epsilon = 0.000001;
@@ -166,6 +170,11 @@ static inline double zh_log_int(int val) {
         return log(val);
     }
 }
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_MATH_H_ */
 

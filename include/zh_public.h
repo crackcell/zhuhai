@@ -23,8 +23,16 @@
 
 #include "zh_error.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define likely(x)       __builtin_expect(!!(x), 1)
 #define unlikely(x)     __builtin_expect(!!(x), 0)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_PUBLIC_H_ */
 

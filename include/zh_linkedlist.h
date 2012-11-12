@@ -23,6 +23,10 @@
 
 #include "zh_public.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct zh_linkedlist_node {
     struct zh_linkedlist_node *next_ptr;
 } zh_linkedlist_node_t;
@@ -47,6 +51,10 @@ void *zh_linkedlist_front(zh_linkedlist_t *l);
 void *zh_linkedlist_at(zh_linkedlist_t *l, const int i);
 
 zh_ret_t zh_linkedlist_clear(zh_linkedlist_t *l);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_LINKEDLIST_H_ */
 

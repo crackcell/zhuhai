@@ -21,9 +21,17 @@
  *
  **/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 
 } zh_thr_linkedlist_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_THR_LINKEDLIST_H_ */
 

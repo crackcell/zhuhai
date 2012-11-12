@@ -24,8 +24,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
-
 #include "zh_public.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define ZH_LOG_MAX_FILE_SIZE 2045   /** in MB */
 #define ZH_LOG_MAX_FILE_NAME 1024
@@ -66,6 +69,10 @@ zh_ret_t zh_closelog();
 zh_ret_t zh_closelog_r();
 
 zh_ret_t zh_writelog(const int event, const char *fmt, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_LOG_H_ */
 

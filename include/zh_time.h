@@ -23,7 +23,15 @@
 
 #include <time.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 char *zh_ctime(char *buff, size_t buff_size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_TIME_H_ */
 

@@ -23,6 +23,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef x86_64
 #define ZH_CACHE_LINE_SIZE 64
 #endif
@@ -34,6 +38,10 @@
     (((((size) - 1) / ZH_CACHE_LINE_SIZE) + 1) * ZH_CACHE_LINE_SIZE)
 
 uint64_t get_tid_self();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_THREAD_H_ */
 

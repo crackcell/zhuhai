@@ -13,13 +13,17 @@
 #define _ZH_ERROR_H_
 
 /**
- * 
+ * Error handling functions
  *
  * @file zh_error.h
  * @author Tan Menglong <tanmenglong@gmail.com>
  * @date Mon Oct 15 11:38:55 2012
  *
  **/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef enum {
     ZH_SUCC = 0,
@@ -29,6 +33,10 @@ typedef enum {
 } zh_ret_t;
 
 char *zh_strerror(int errnum);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ZH_ERROR_H_ */
 
