@@ -13,6 +13,9 @@ include ../Makefile.env
 
 INC = -I../include -I../src
 LIB = -lcunit -lpthread
+ifeq ($(OS), Linux)
+	LIB += -lm
+endif
 
 OBJ = ../src/libzhuhai.a
 
