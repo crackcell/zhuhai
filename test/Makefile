@@ -12,33 +12,30 @@
 include ../Makefile.env
 
 INC = -I../include -I../src
-LIB = -lcunit -lpthread
+LIB = -lgtest -lpthread
 ifeq ($(OS), Linux)
 	LIB += -lm
 endif
 
-OBJ = ../src/libzhuhai.a
+#OBJ = ../src/libzhuhai.a
 
-TEST_SRC = $(wildcard *_SUITE.c)
-TEST_OBJ = $(patsubst %.c, %.o, $(TEST_SRC))
-BUILD_TARGETS = $(patsubst %.c, %, $(TEST_SRC))
+TEST_SRC = $(wildcard *_test.cpp)
+TEST_OBJ = $(patsubst %.cpp, %.o, $(TEST_SRC))
+BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 
 .PHONY : all clean src check
 
 all : $(BUILD_TARGETS)
 
-a :
-	echo $(BUILD_TARGETS)
-
 test : 
-	for file in $(wildcard *SUITE); \
+	for file in $(wildcard *_test); \
 		do ./$$file; \
 	done;
 
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)
 
-%_SUITE : %_SUITE.o
+%_test : %_test.o
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
 check : $(BUILD_TARGETS)

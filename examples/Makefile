@@ -19,9 +19,9 @@ endif
 
 OBJ = ../src/libzhuhai.a
 
-TEST_SRC = $(wildcard *_example.c)
-TEST_OBJ = $(patsubst %.c, %.o, $(TEST_SRC))
-BUILD_TARGETS = $(patsubst %.c, %, $(TEST_SRC))
+TEST_SRC = $(wildcard *_eg.c)
+TEST_OBJ = $(patsubst %.cpp, %.o, $(TEST_SRC))
+BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 
 .PHONY : all clean src check
 
@@ -30,10 +30,10 @@ all : $(BUILD_TARGETS)
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)
 
-%_example : %_example.o
+%_eg : %_eg.o
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
 check : all
-	for file in $(wildcard *example); \
+	for file in $(wildcard *_eg); \
 		do valgrind --leak-check=full ./$$file; \
 	done;
