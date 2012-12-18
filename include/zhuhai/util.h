@@ -40,7 +40,6 @@ namespace zhuhai {
             cout << text << text_sparator;
         }
 
-        typename T::const_iterator c_end = c.end();
         copy(begin, end,
              ostream_iterator<typename T::value_type>(cout, element_spearator));
         cout << endl;
