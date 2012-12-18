@@ -24,13 +24,9 @@
 #include <iostream>
 #include <iterator>
 #include <map>
-#include <boost/iterator.hpp>
-#include <boost/utility.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_same.hpp>
 
 namespace zhuhai {
+
     template <class T, class I>
     void print(const T &c, I begin, I end,
                const char *text = NULL, const char *element_spearator = " ") {
@@ -50,6 +46,7 @@ namespace zhuhai {
                const char *element_spearator = " ") {
         print(c, c.begin(), c.end(), text, element_spearator);
     }
+
 }
 
 #endif /* _ZHUHAI_UTIL_H_ */
