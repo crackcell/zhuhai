@@ -12,14 +12,14 @@
 include ../Makefile.env
 
 INC = -I../include -I../src
-LIB = -lgtest -lpthread
+LIB = -lgtest -lpthread -ltcmalloc
 ifeq ($(OS), Linux)
 	LIB += -lm
 endif
 
 #OBJ = ../src/libzhuhai.a
 
-TEST_SRC = $(wildcard *_test.cpp)
+TEST_SRC = $(wildcard *_unittest.cpp)
 TEST_OBJ = $(patsubst %.cpp, %.o, $(TEST_SRC))
 BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 
@@ -28,14 +28,14 @@ BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 all : $(BUILD_TARGETS)
 
 test : 
-	for file in $(wildcard *_test); \
+	for file in $(wildcard *_unittest); \
 		do ./$$file; \
 	done;
 
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)
 
-%_test : %_test.o
+%_unittest : %_unittest.o
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
 check : $(BUILD_TARGETS)

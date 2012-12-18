@@ -19,7 +19,7 @@
 *.log.wf
 
 # test
-*_test
+*_unittest
 
 # example
 *_example
