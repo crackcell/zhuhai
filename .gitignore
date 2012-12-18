@@ -19,7 +19,7 @@
 *.log.wf
 
 # test
-*_SUITE
+*_test
 
 # example
 *_example
