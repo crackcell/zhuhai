@@ -25,3 +25,18 @@
 *_example
 
 output
+
+# autoconf
+.libs
+.deps
+config.status
+third/Makefile
+third/scws/Makefile
+third/scws/cli/Makefile
+third/scws/cli/gen-scws-dict
+third/scws/cli/scws
+third/scws/etc/Makefile
+third/scws/libscws/Makefile
+third/scws/libtool
+third/scws/stamp-h1
+third/scws/config.h

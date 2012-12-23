@@ -24,6 +24,10 @@
 
 zh_thr_queue_t *zh_thr_queue_open(zh_thr_queue_callback_t cb,
                                   const char *name) {
+    if (NULL == cb.node_alloc_func || NULL == cb.node_free_func ||
+        NULL == cb.node_less_func || cb.node_size <= 0) {
+        return NULL;
+    }
 
     zh_thr_queue_t *p = (zh_thr_queue_t*)malloc(sizeof(zh_thr_queue_t));
     if (NULL == p) {
@@ -40,6 +44,11 @@ zh_thr_queue_t *zh_thr_queue_open(zh_thr_queue_callback_t cb,
     if (NULL == p->queue_ptr) {
         goto err;
     }
+
+    p->node_alloc_func = cb.node_alloc_func;
+    p->node_free_func = cb.node_free_func;
+    p->node_less_func = cb.node_less_func;
+    p->node_size = cb.node_size;
 
     return p;
 err:

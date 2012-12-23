@@ -25,14 +25,9 @@
 #include <vector>
 #include <zhuhai/zh_meta.h>
 
-typedef struct zh_thr_queue_node {
-    void *p;
-    struct zh_thr_queue_node *next_ptr;
-} zh_thr_queue_node_t;
-
 typedef void*(*zh_thr_queue_node_alloc_func_t)(void *arg);
 typedef int(*zh_thr_queue_node_free_func_t)(void *arg);
-typedef int(*zh_thr_queue_node_less_func_t)(void *a, void *b);
+typedef int(*zh_thr_queue_node_less_func_t)(const void *a, const void *b);
 
 typedef struct zh_thr_queue_callback {
     size_t node_size;
@@ -41,22 +36,34 @@ typedef struct zh_thr_queue_callback {
     zh_thr_queue_node_less_func_t node_less_func;
 } zh_thr_queue_callback_t;
 
-bool operator<(const zh_thr_queue_node_t &a, const zh_thr_queue_node_t &b) {
-    return true;
-}
+typedef struct zh_thr_queue_node {
+    void *p;
+    struct zh_thr_queue_node *next_ptr;
+    zh_thr_queue_node_less_func_t less_func;
+} zh_thr_queue_node_t;
 
-bool operator>(const zh_thr_queue_node_t &a, const zh_thr_queue_node_t &b) {
-    return true;
-}
+struct zh_thr_queue_less {
+    bool operator()(const zh_thr_queue_node_t &a,
+                    const zh_thr_queue_node_t &b) {
+        if (NULL == a.less_func || NULL == b.less_func ||
+            a.less_func != b.less_func) {
+            return false;
+        }
+        return a.less_func(&a, &b) < 0;
+    }
+};
 
 typedef std::priority_queue<zh_thr_queue_node_t,
-        std::vector<zh_thr_queue_node_t>,
-        std::less<std::vector<zh_thr_queue_node_t>::value_type> >
+    std::vector<zh_thr_queue_node_t>, zh_thr_queue_less>
         zh_thr_queue_type_t;
 
 typedef struct zh_thr_queue {
     zh_meta_t meta;
     zh_thr_queue_type_t *queue_ptr;
+    size_t node_size;
+    zh_thr_queue_node_alloc_func_t node_alloc_func;
+    zh_thr_queue_node_free_func_t node_free_func;
+    zh_thr_queue_node_less_func_t node_less_func;
 } zh_thr_queue_t;
 
 zh_thr_queue_t *zh_thr_queue_open(zh_thr_queue_callback_t cb, const char *name);
