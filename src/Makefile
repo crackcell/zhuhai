@@ -13,10 +13,10 @@ include ../Makefile.env
 
 BUILD_TARGETS = libzhuhai.a
 
-INC = -I../include -I./
+INC = -I../include/zhuhai -I./
 
-SRC = $(wildcard *.c)
-OBJ = $(patsubst %.c, %.o, $(SRC))
+SRC = $(wildcard *.cpp)
+OBJ = $(patsubst %.cpp, %.o, $(SRC))
 
 .PHONY : all clean
 

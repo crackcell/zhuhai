@@ -17,23 +17,24 @@ all : output
 
 output :
 	make -C src
-	make -C test
+	make -C unittest
 	make -C examples
-	mkdir -p output/lib output/include
+	mkdir -p output/lib output/include output/examples
 	cp src/libzhuhai.a output/lib
-	cp include/*.h output/include
+	cp -r include/* output/include/
+	cp examples/* output/examples/
 
 test :
-	make -C test
-	make test -C test
+	make -C unittest
+	make test -C unittest
 
 check :
-	make check -C test
+	make check -C unittest
 
 clean :
 	rm -rf output
 	make clean -C src
-	make clean -C test
+	make clean -C unittest
 	make clean -C examples
 
 help :

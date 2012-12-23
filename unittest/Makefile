@@ -11,17 +11,15 @@
 
 include ../Makefile.env
 
-ZH_ROOT = ../
-
-INC = -I../include -I../src
-LIB = -lpthread
+INC = -I../include/zhuhai -I../src
+LIB = -lgtest -lpthread
 ifeq ($(OS), Linux)
 	LIB += -lm
 endif
 
 OBJ = ../src/libzhuhai.a
 
-TEST_SRC = $(wildcard *_example.cpp)
+TEST_SRC = $(wildcard *_unittest.cpp)
 TEST_OBJ = $(patsubst %.cpp, %.o, $(TEST_SRC))
 BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 
@@ -29,13 +27,21 @@ BUILD_TARGETS = $(patsubst %.cpp, %, $(TEST_SRC))
 
 all : $(BUILD_TARGETS)
 
+a :
+	echo $(BUILD_TARGETS)
+
+test : 
+	for file in $(wildcard *SUITE); \
+		do ./$$file; \
+	done;
+
 clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)
 
-%_example : %_example.o
+%_unittest : %_unittest.o
 	$(LINK) -o $@ $^ $(OBJ) $(LIB)
 
-check : all
-	for file in $(wildcard *example); \
+check : $(BUILD_TARGETS)
+	for file in $(wildcard *SUITE); \
 		do valgrind --leak-check=full ./$$file; \
 	done;
