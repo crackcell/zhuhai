@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtest/gtest.h>
-#include <zh_math.h>
+#include <zhuhai/zh_math.h>
 
 TEST(zh_math_test, log) {
     int val;

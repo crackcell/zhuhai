@@ -18,7 +18,7 @@
  *
  **/
 
-#include "zh_error.h"
+#include <zhuhai/zh_error.h>
 
 static char* g_errorstr[] = {
     "Success",           // 0

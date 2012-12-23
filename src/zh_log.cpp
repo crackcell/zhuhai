@@ -18,15 +18,15 @@
  *
  **/
 
-#include "zh_log.h"
+#include <zhuhai/zh_log.h>
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "zh_public.h"
-#include "zh_time.h"
+#include <zhuhai/zh_public.h>
+#include <zhuhai/zh_time.h>
 
 #define TIME_BUFF_SIZE 20
 

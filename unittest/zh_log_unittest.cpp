@@ -22,7 +22,7 @@
 #include <string.h>
 #include <gtest/gtest.h>
 
-#include "zh_log.h"
+#include <zhuhai/zh_log.h>
 
 TEST(zh_log_test, basic_test) {
     ASSERT_EQ(ZH_SUCC, zh_log_open("test", ".", "test_file", ZH_LOG_ALL));

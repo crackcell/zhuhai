@@ -22,7 +22,7 @@
 #include <string.h>
 #include <gtest/gtest.h>
 
-#include "zh_public.h"
+#include <zhuhai/zh_public.h>
 
 TEST(zh_public_test, trim_left) {
     char b[] = "   test";

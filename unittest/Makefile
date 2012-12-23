@@ -11,7 +11,7 @@
 
 include ../Makefile.env
 
-INC = -I../include/zhuhai -I../src
+INC = -I../include -I../src
 LIB = -lgtest -lpthread
 ifeq ($(OS), Linux)
 	LIB += -lm

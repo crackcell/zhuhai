@@ -18,14 +18,14 @@
  *
  **/
 
-#include "zh_conf.h"
+#include <zhuhai/zh_conf.h>
 
 #include <stdio.h>
 #include <errno.h>
 #include <boost/lexical_cast.hpp>
 
-#include "zh_public.h"
-#include "zh_log.h"
+#include <zhuhai/zh_public.h>
+#include <zhuhai/zh_log.h>
 
 using namespace std;
 using namespace boost;

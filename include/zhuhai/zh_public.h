@@ -21,7 +21,9 @@
  *
  **/
 
-#include "zh_error.h"
+#include <unistd.h>
+#include <zhuhai/zh_error.h>
+#include <zhuhai/zh_meta.h>
 
 #ifndef likely
 #define likely(x)       __builtin_expect(!!(x), 1)

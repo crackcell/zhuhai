@@ -23,8 +23,8 @@
 #include <string>
 #include <gtest/gtest.h>
 
-#include "zh_conf.h"
-#include "zh_math.h"
+#include <zhuhai/zh_conf.h>
+#include <zhuhai/zh_math.h>
 
 using namespace std;
 

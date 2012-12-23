@@ -25,7 +25,7 @@
 #include <map>
 #include <string>
 #include <boost/lexical_cast.hpp>
-#include "zh_public.h"
+#include <zhuhai/zh_public.h>
 
 typedef struct zh_conf {
     std::map<std::string, std::string> *items_ptr;

@@ -18,7 +18,7 @@
  *
  **/
 
-#include "zh_time.h"
+#include <zhuhai/zh_time.h>
 
 #include <stdio.h>
 #include <time.h>

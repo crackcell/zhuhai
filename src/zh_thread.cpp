@@ -18,7 +18,7 @@
  *
  **/
 
-#include "zh_thread.h"
+#include <zhuhai/zh_thread.h>
 
 #include <pthread.h>
 #include <unistd.h>
