@@ -9,11 +9,15 @@
 * Overview
 * Features
 ** zh_log [1/2]
+   Log lib
    - [X] multithread logging
    - [ ] craete folder when does not exist
 ** zh_conf [1/1]
+   Conf lib
    - [X] basic features
 ** zh_thr_queue [0/1]
+   Job queues uesed among threads
    - [ ] basic features
 ** zh_wordseg [1/1]
-   - [X] word seg
+   Chinese word segmentation
+   - [X] basic word seg
