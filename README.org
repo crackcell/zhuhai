@@ -7,4 +7,13 @@
 #+STYLE: <link rel="stylesheet" type="text/css" href="http://blog.crackcell.com/org-mode/note.css" />
 
 * Overview
-  Zhuhai
+* Features
+** zh_log [1/2]
+   - [X] multithread logging
+   - [ ] craete folder when does not exist
+** zh_conf [1/1]
+   - [X] basic features
+** zh_thr_queue [0/1]
+   - [ ] basic features
+** zh_wordseg [1/1]
+   - [X] word seg
