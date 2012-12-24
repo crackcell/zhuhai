@@ -15,6 +15,9 @@ include Makefile.env
 
 all : output
 
+third :
+	make -C third
+
 output :
 	make -C src
 	make -C unittest
