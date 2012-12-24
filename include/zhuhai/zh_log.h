@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
+
 #include "zh_public.h"
 
 #define ZH_LOG_MAX_FILE_SIZE 2045   /** in MB */
@@ -40,28 +41,28 @@
 
 #define ZH_FATAL(fmt, arg...) do {                                      \
         zh_log_write(ZH_LOG_FATAL, "[%s:%s:%d]" fmt, __FILE__,           \
-                    __PRETTY_FUNCTION__, __LINE__, ##arg);              \
+                    __FUNCTION__, __LINE__, ##arg);              \
     } while(0)
 
 #define ZH_WARN(fmt, arg...) do {                                       \
         zh_log_write(ZH_LOG_WARNING, "[%s:%s:%d]" fmt, __FILE__,         \
-                    __PRETTY_FUNCTION__, __LINE__, ##arg);              \
+                    __FUNCTION__, __LINE__, ##arg);              \
     } while(0)
 
 #define ZH_NOTICE(fmt, arg...) do {                                     \
         zh_log_write(ZH_LOG_NOTICE, "[%s:%s:%d]" fmt, __FILE__,          \
-                    __PRETTY_FUNCTION__, __LINE__, ##arg);              \
+                    __FUNCTION__, __LINE__, ##arg);              \
     } while(0)
 
 #define ZH_TRACE(fmt, arg...) do {                                      \
         zh_log_write(ZH_LOG_TRACE, "[%s:%s:%d]" fmt, __FILE__,           \
-                    __PRETTY_FUNCTION__, __LINE__, ##arg);              \
+                    __FUNCTION__, __LINE__, ##arg);              \
     } while(0)
 
-#ifdef CRAWLER_DEBUG
+#ifdef _DEBUG
 #define ZH_DEBUG(fmt, arg...) do {                                      \
         zh_log_write(ZH_LOG_DEBUG, "[%s:%s:%d]" fmt, __FILE__,           \
-                    __PRETTY_FUNCTION__, __LINE__, ##arg);              \
+                    __FUNCTION__, __LINE__, ##arg);              \
     } while(0)
 #else
 #define ZH_DEBUG(fmt, arg...) do {} while(0)

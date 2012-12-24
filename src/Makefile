@@ -11,9 +11,11 @@
 
 include ../Makefile.env
 
+ZH_ROOT = ../
+
 BUILD_TARGETS = libzhuhai.a
 
-INC = -I../include/ -I./
+INC = -I../include/ -I./ -I$(SCWS)/include
 
 SRC = $(wildcard *.cpp)
 OBJ = $(patsubst %.cpp, %.o, $(SRC))

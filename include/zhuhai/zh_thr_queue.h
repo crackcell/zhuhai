@@ -23,7 +23,8 @@
 
 #include <queue>
 #include <vector>
-#include <zhuhai/zh_meta.h>
+
+#include "zh_meta.h"
 
 typedef void*(*zh_thr_queue_node_alloc_func_t)(void *arg);
 typedef int(*zh_thr_queue_node_free_func_t)(void *arg);

@@ -11,8 +11,11 @@
 
 include ../Makefile.env
 
-INC = -I../include -I../src
-LIB = -lgtest -lpthread -ltcmalloc
+ZH_ROOT = ../
+
+INC = -I../include/ -I./ -I$(SCWS)/include
+LIB = -L$(SCWS)/lib -lscws \
+	-lgtest -lpthread -ltcmalloc
 ifeq ($(OS), Linux)
 	LIB += -lm
 endif

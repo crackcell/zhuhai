@@ -40,7 +40,7 @@
 static pthread_key_t g_log_unit_key;
 static pthread_once_t g_log_unit_key_once = PTHREAD_ONCE_INIT;
 
-static int g_mask;
+static int g_mask = ZH_LOG_ALL;
 static char g_log_name[ZH_LOG_MAX_FILE_NAME];
 static struct zh_log_file *g_file_ptr;
 static struct zh_log_file *g_file_wf_ptr;
@@ -216,6 +216,10 @@ zh_ret_t __closelog_file() {
     return ZH_SUCC;
 }
 
+static inline bool is_valid_unit(zh_log_unit *p) {
+    return !(NULL == p || NULL == p->file_ptr || NULL == p->file_wf_ptr);
+}
+
 zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
     int wf;
     size_t bpos;
@@ -263,7 +267,7 @@ zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
         break;
     }
 
-    if (unit_ptr == NULL) {
+    if (!is_valid_unit(unit_ptr)) {
         tid = pthread_self();
         fp = wf == 1 ? stderr : stdout;
         log_name = "null";
@@ -282,7 +286,7 @@ zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
 
     vsnprintf(&buff[bpos], sizeof(buff) - bpos, fmt, args);
 
-    if (unit_ptr == NULL) {
+    if (!is_valid_unit(unit_ptr)) {
         fprintf(fp, "%s\n", buff);
         fflush(fp);
     } else {

@@ -13,8 +13,9 @@ include ../Makefile.env
 
 ZH_ROOT = ../
 
-INC = -I../include -I../src
-LIB = -lpthread
+INC = -I../include/ -I./ -I$(SCWS)/include
+LIB = -L$(SCWS)/lib -lscws\
+	-lpthread -ltcmalloc
 ifeq ($(OS), Linux)
 	LIB += -lm
 endif
@@ -33,7 +34,7 @@ clean :
 	rm -rf $(TEST_OBJ) $(BUILD_TARGETS)
 
 %_example : %_example.o
-	$(LINK) -o $@ $^ $(OBJ) $(LIB)
+	$(LINK) -o $@ $^ $(OBJ) $(LIB) -D_DEBUG
 
 check : all
 	for file in $(wildcard *example); \
