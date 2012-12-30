@@ -161,6 +161,9 @@ zh_ret_t __openlog_file(const char *file_path, const char *file_name) {
         goto error;
     }
 
+    pthread_mutex_init(&(g_file_ptr->lock), NULL);
+    pthread_mutex_init(&(g_file_wf_ptr->lock), NULL);
+
     snprintf(g_file_ptr->file_name,
              sizeof(g_file_ptr->file_name), "%s/%s.log",
              file_path, file_name);

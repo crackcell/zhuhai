@@ -21,3 +21,5 @@
 ** zh_wordseg [1/1]
    Chinese word segmentation
    - [X] basic word seg
+** zh_ependingpool [0/1]
+   - [ ] basic features 

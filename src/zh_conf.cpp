@@ -134,14 +134,15 @@ int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff, size_t size) 
     return ZH_SUCC;
 }
 
-int zh_conf_get_str_dft(const zh_conf_t *p, const char *k, char *buff,
-                       size_t size, const char *dft) {
+int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff,
+                    size_t size, const char *dft) {
     if (NULL == p || NULL == buff || size < 0 || NULL == dft) {
         return ZH_FAIL;
     }
 
     if (zh_conf_get_str(p, k, buff, size) == ZH_FAIL) {
         strncpy(buff, dft, size);
+        return ZH_FAIL;
     }
 
     return ZH_SUCC;

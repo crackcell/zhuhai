@@ -36,8 +36,8 @@ zh_conf_t *zh_conf_open(const char *path, const char *file);
 int zh_conf_close(zh_conf_t *p);
 
 int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff, size_t size);
-int zh_conf_get_str_dft(const zh_conf_t *p, const char *k, char *buff,
-                        size_t size, const char *dft);
+int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff,
+                    size_t size, const char *dft);
 
 template <class V>
 int zh_conf_get(const zh_conf_t *p, const char *k, V *v) {
@@ -67,6 +67,7 @@ int zh_conf_get(const zh_conf_t *p, const char *k, V *v, const V dft) {
 
     if (zh_conf_get(p, k, v) == ZH_FAIL) {
         *v = dft;
+        return ZH_FAIL;
     }
 
     return ZH_SUCC;

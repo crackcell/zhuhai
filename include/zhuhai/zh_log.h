@@ -31,6 +31,7 @@
 #define ZH_LOG_MAX_FILE_NAME 1024
 #define ZH_LOG_BUFF_SIZE     2048   /** a log buff size */
 
+// log mask
 #define ZH_LOG_NONE    0
 #define ZH_LOG_FATAL   0x01
 #define ZH_LOG_WARNING 0x02
@@ -84,8 +85,8 @@ struct zh_log_unit {
 };
 
 zh_ret_t zh_log_open(const char *log_name,
-                    const char *file_path, const char *file_name,
-                    const int mask);
+                     const char *file_path, const char *file_name,
+                     const int mask);
 zh_ret_t zh_log_open_r();
 
 zh_ret_t zh_log_write(const int event, const char *format, ...);
