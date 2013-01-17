@@ -23,7 +23,11 @@
 #include <zhuhai/zh_epool.h>
 #include <zhuhai/zh_log.h>
 
-zh_epool_t *zh_epool_open() {
+zh_epool_t *zh_epool_open(const int sock_num) {
+    if (sock_num < 0) {
+        return NULL;
+    }
+
     zh_epool_t *p = (zh_epool_t*)malloc(sizeof(zh_epool_t));
     if (NULL == p) {
         return NULL;
@@ -31,9 +35,10 @@ zh_epool_t *zh_epool_open() {
 
     p->listen_fd = 0;
     p->is_run = 0;
-    pthread_mutex_init(&p->sock_queue_lock, NULL);
-    p->sock_queue_ptr = new (std::nothrow) std::deque<int>;
-    if (NULL == p->sock_queue_ptr) {
+    pthread_mutex_init(&p->job_queue_lock, NULL);
+    pthread_cond_init(&p->job_queue_cond, NULL);
+    p->job_queue = (struct zh_epool_job*)malloc(sizeof(struct zh_epool_job));
+    if (NULL == p->job_queue) {
         ZH_FATAL("memory error");
         goto err;
     }
@@ -47,13 +52,7 @@ zh_epool_t *zh_epool_open() {
     return p;
 err:
     if (p != NULL) {
-        if (p->sock_queue_ptr != NULL) {
-            delete p->sock_queue_ptr;
-        }
-        if (p->base != NULL) {
-            event_base_free(p->base);
-        }
-        free(p);
+        zh_epool_close(p);
     }
     return NULL;
 }
@@ -62,8 +61,8 @@ int zh_epool_close(zh_epool_t *p) {
     if (NULL == p) {
         return ZH_FAIL;
     }
-    if (p->sock_queue_ptr != NULL) {
-        delete p->sock_queue_ptr;
+    if (p->job_queue != NULL) {
+        delete p->job_queue;
     }
     if (p->base != NULL) {
         event_base_free(p->base);
@@ -78,9 +77,7 @@ int zh_epool_set_listen_fd(zh_epool_t *p, const int fd) {
     }
 
     p->listen_fd = fd;
-    p->listen_event = event_new(p->base, p->listen_fd, EV_READ|EV_PERSIST,
-                                accept_cb, (void*)(p->base));
-    event_add(p->listen_event, NULL);
+    //p->listen_event = event_new();
 
     return ZH_SUCC;
 }

@@ -36,13 +36,15 @@ typedef struct {
     struct event_base *base;
     struct event *listen_event;
 
-    pthread_mutex_t sock_queue_lock;
-    std::deque<struct zh_epool_job> *sock_queue_ptr;
+    int sock_num;
+    pthread_mutex_t job_queue_lock;
+    pthread_cond_t job_queue_cond;
+    struct zh_epool_job* job_queue;
 
     int is_run;
 } zh_epool_t;
 
-zh_epool_t *zh_epool_open();
+zh_epool_t *zh_epool_open(const int sock_num);
 int zh_epool_close(zh_epool_t *p);
 
 int zh_epool_set_listen_fd(zh_epool_t *p, const int fd);
