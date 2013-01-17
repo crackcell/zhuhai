@@ -23,8 +23,7 @@
 #include <zhuhai/zh_epool.h>
 #include <zhuhai/zh_log.h>
 
-zh_epool_t *zh_epool_open(const int sock_num,
-                          const int connect_timeout,
+zh_epool_t *zh_epool_open(const int connect_timeout,
                           const int read_timeout, const int write_timeout) {
     zh_epool_t *p = (zh_epool_t*)malloc(sizeof(zh_epool_t));
     if (NULL == p) {
@@ -35,22 +34,43 @@ zh_epool_t *zh_epool_open(const int sock_num,
     p->read_timeout = read_timeout;
     p->write_timeout = write_timeout;
     p->is_run = 0;
-    p->sock_num = sock_num;
-    p->sock_array = (int*)malloc(sizeof(int) * sock_num);
-    if (NULL == p->sock_array) {
+    pthread_mutex_init(&p->sock_queue_lock, NULL);
+    p->sock_queue_ptr = new (std::nothrow) std::deque<int>;
+    if (NULL == p->sock_queue_ptr) {
         ZH_FATAL("memory error");
+        goto err;
+    }
+
+    p->base = event_base_new();
+    if (NULL == p->base) {
+        ZH_FATAL("alloc event base fail");
         goto err;
     }
 
     return p;
 err:
     if (p != NULL) {
+        if (p->sock_queue_ptr != NULL) {
+            delete p->sock_queue_ptr;
+        }
+        if (p->base != NULL) {
+            event_base_free(p->base);
+        }
         free(p);
     }
     return NULL;
 }
 
 int zh_epool_close(zh_epool_t *p) {
+    if (NULL == p) {
+        return ZH_FAIL;
+    }
+    if (p->sock_queue_ptr != NULL) {
+        delete p->sock_queue_ptr;
+    }
+    if (p->base != NULL) {
+        event_base_free(p->base);
+    }
     free(p);
     return ZH_SUCC;
 }
@@ -61,6 +81,9 @@ int zh_epool_set_listen_fd(zh_epool_t *p, const int fd) {
     }
 
     p->listen_fd = fd;
+    p->listen_event = event_new(p->base, p->listen_fd, EV_READ|EV_PERSIST,
+                                accept_cb, (void*)(p->base));
+    event_add(p->listen_event, NULL);
 
     return ZH_SUCC;
 }
@@ -71,6 +94,7 @@ int zh_epool_start(zh_epool_t *p) {
     }
 
     p->is_run = 1;
+    event_base_dispatch(p->base);
 
     return ZH_SUCC;
 }
@@ -80,8 +104,8 @@ int zh_epool_stop(zh_epool_t *p) {
         return ZH_FAIL;
     }
 
+    event_base_loopexit(p->base, NULL);
     p->is_run = 0;
-    // TODO: reset all socks
 
     return ZH_SUCC;
 }

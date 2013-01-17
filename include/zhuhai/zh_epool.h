@@ -21,27 +21,28 @@
  *
  **/
 
+#include <sys/time.h>
 #include <event2/event.h>
+#include <pthread.h>
+#include <deque>
+
+struct zh_epool_job {
+    int sock;
+    struct timeval in_queue_time;
+};
 
 typedef struct {
     int listen_fd;
     struct event_base *base;
     struct event *listen_event;
 
-    int *sock_array;
-    int sock_num;
-    int *head;
-    int *tail;
+    pthread_mutex_t sock_queue_lock;
+    std::deque<struct zh_epool_job> *sock_queue_ptr;
 
-    int connect_timeout;
-    int read_timeout;
-    int write_timeout;
     int is_run;
 } zh_epool_t;
 
-zh_epool_t *zh_epool_open(const int sock_num,
-                          const int read_timeout, const int write_timeout,
-                          const int connect_timeout);
+zh_epool_t *zh_epool_open();
 int zh_epool_close(zh_epool_t *p);
 
 int zh_epool_set_listen_fd(zh_epool_t *p, const int fd);
