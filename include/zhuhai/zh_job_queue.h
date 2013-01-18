@@ -9,29 +9,29 @@
  *
  **************************************************************/
 
-#ifndef _ZH_UTIL_H_
-#define _ZH_UTIL_H_
+#ifndef _ZH_JOB_QUEUE_H_
+#define _ZH_JOB_QUEUE_H_
 
 /**
  * 
  *
- * @file zh_util.h
+ * @file zh_job_queue.h
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Thu Jan 24 19:33:10 2013
+ * @date Fri Jan 18 02:18:11 2013
  *
  **/
 
-#include <event2/event.h>
 
-static inline void zh_sock_make_nonblock(int fd) {
-    evutil_make_socket_nonblocking(fd);
-}
 
-static inline void zh_sock_set_reuseaddr(int fd) {
-    int one = 1;
-    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
-}
+typedef struct {
+    zh_job_queue_func_t func;
 
-#endif /* _ZH_UTIL_H_ */
+    std::deque wait_queue<>
+    struct zh_job_rawqueue wait_queue;
+    struct zh_job_rawqueue work_queue;
+} zh_job_queue_t;
+
+
+#endif /* _ZH_JOB_QUEUE_H_ */
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

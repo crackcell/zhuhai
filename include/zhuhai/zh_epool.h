@@ -36,14 +36,14 @@ typedef struct {
     struct event_base *base;
     struct event *listen_event;
 
-    int max_job_num;
+    int max_wait_num;
+    pthread_mutex_t wait_queue_lock;
+    std::deque<struct zh_epool_job> *wait_queue;
 
-    pthread_mutex_t job_queue_lock;
-    pthread_cond_t job_queue_cond;
-
-    int job_head;
-    int job_tail;
-    struct zh_epool_job *job_queue;
+    int max_work_num;
+    pthread_mutex_t work_queue_lock;
+    pthread_cond_t work_queue_cond;
+    std::deque<struct zh_epool_job> *work_queue;
 
     int is_run;
 } zh_epool_t;
@@ -56,7 +56,7 @@ typedef struct {
  * @return ZH_SUCC if successful, or ZH_FAIL if an error occurred.
  * @see zh_epool_close()
  */
-zh_epool_t *zh_epool_open(const int max_job_num);
+zh_epool_t *zh_epool_open(const int max_wait_num, const int max_work_num);
 
 /**
  * Destroys a epool.
