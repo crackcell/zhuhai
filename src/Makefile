@@ -40,4 +40,4 @@ else
 endif
 
 clean :
-	rm -rf $(OBJ) $(BUILD_TARGETS)
+	rm -rf $(OBJ) $(OBJ_DEBUG) $(BUILD_TARGETS)

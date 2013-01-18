@@ -24,26 +24,16 @@
 #include <sys/time.h>
 #include <event2/event.h>
 #include <pthread.h>
-#include <deque>
-
-struct zh_epool_job {
-    int sock;
-    struct timeval in_queue_time;
-};
+#include <zhuhai/zh_sock_queue.h>
 
 typedef struct {
     int listen_fd;
     struct event_base *base;
     struct event *listen_event;
 
-    int max_wait_num;
-    pthread_mutex_t wait_queue_lock;
-    std::deque<struct zh_epool_job> *wait_queue;
-
-    int max_work_num;
-    pthread_mutex_t work_queue_lock;
-    pthread_cond_t work_queue_cond;
-    std::deque<struct zh_epool_job> *work_queue;
+    pthread_mutex_t sock_queue_lock;
+    pthread_cond_t sock_queue_cond;
+    zh_sock_queue_t *sock_queue;
 
     int is_run;
 } zh_epool_t;
@@ -51,12 +41,12 @@ typedef struct {
 /**
  * Create a new epool.
  *
- * @param [in] max_job_num max number of jobs the pool can process 
+ * @param [in] max_job_num max number of jobs the pool can process
  *             at the same time.
  * @return ZH_SUCC if successful, or ZH_FAIL if an error occurred.
  * @see zh_epool_close()
  */
-zh_epool_t *zh_epool_open(const int max_wait_num, const int max_work_num);
+zh_epool_t *zh_epool_open(const int max_job_num);
 
 /**
  * Destroys a epool.
@@ -82,7 +72,7 @@ static inline int zh_epool_is_run(zh_epool_t *p) {
     return NULL == p ? 0 : 1 == p->is_run;
 }
 
-int zh_epool_fetch_item(zh_epool_t *p, int *offset, int &fd);
+int zh_epool_fetch_item(zh_epool_t *p, int *offset, int *fd);
 int zh_epool_reset_item(zh_epool_t *p, const int offset);
 
 // check timeout
