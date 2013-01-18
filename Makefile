@@ -15,7 +15,7 @@ include Makefile.env
 
 all : output
 
-third :
+3rd :
 	make -C third
 
 output :

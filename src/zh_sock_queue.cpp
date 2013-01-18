@@ -76,7 +76,7 @@ int zh_sock_queue_append(zh_sock_queue_t *p, const int fd) {
     bool find;
 
     if (p->sock_num == p->max_sock_num) {
-        ZH_FATAL("queue full");
+        ZH_DEBUG("queue full");
         ret = ZH_QUEUE_FULL;
         goto out;
     }
@@ -93,7 +93,7 @@ int zh_sock_queue_append(zh_sock_queue_t *p, const int fd) {
     }
 
     if (!find) {
-        ZH_FATAL("queue full");
+        ZH_DEBUG("queue full");
         ret = ZH_QUEUE_FULL;
         p->sock_num = p->max_sock_num;
         goto out;
@@ -120,7 +120,7 @@ int zh_sock_queue_fetch(zh_sock_queue_t *p, int *fd, int *offset) {
     bool find;
 
     if (0 == p->sock_num) {
-        ZH_FATAL("queue empty");
+        ZH_DEBUG("queue empty");
         ret = ZH_QUEUE_EMPTY;
         goto out;
     }
@@ -136,7 +136,7 @@ int zh_sock_queue_fetch(zh_sock_queue_t *p, int *fd, int *offset) {
     }
 
     if (!find) {
-        ZH_FATAL("queue empty");
+        ZH_DEBUG("queue empty");
         ret = ZH_QUEUE_EMPTY;
         p->sock_num = 0;
         goto out;
