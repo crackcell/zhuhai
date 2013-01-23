@@ -10,7 +10,7 @@
  **************************************************************/
 
 /**
- * 
+ * Pending pool with libevent
  *
  * @file zh_epool.cpp
  * @author Tan Menglong <tanmenglong@gmail.com>
@@ -23,16 +23,13 @@
 #include <zhuhai/zh_epool.h>
 #include <zhuhai/zh_log.h>
 
-zh_epool_t *zh_epool_open(const int connect_timeout,
-                          const int read_timeout, const int write_timeout) {
+zh_epool_t *zh_epool_open() {
     zh_epool_t *p = (zh_epool_t*)malloc(sizeof(zh_epool_t));
     if (NULL == p) {
         return NULL;
     }
 
-    p->connect_timeout = connect_timeout;
-    p->read_timeout = read_timeout;
-    p->write_timeout = write_timeout;
+    p->listen_fd = 0;
     p->is_run = 0;
     pthread_mutex_init(&p->sock_queue_lock, NULL);
     p->sock_queue_ptr = new (std::nothrow) std::deque<int>;

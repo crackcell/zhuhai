@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A7866A22-7393-404D-985B-E0F3B72325CD}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>Z:\repo\github\zhuhai\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="examples\zh_conf_1_example.cpp" />
+    <ClCompile Include="examples\zh_log_1_example.cpp" />
+    <ClCompile Include="examples\zh_log_2_example.cpp" />
+    <ClCompile Include="examples\zh_log_3_example.cpp" />
+    <ClCompile Include="examples\zh_math_1_example.cpp" />
+    <ClCompile Include="examples\zh_public_1_example.cpp" />
+    <ClCompile Include="examples\zh_thr_queue_1_example.cpp" />
+    <ClCompile Include="examples\zh_wordseg_1_example.cpp" />
+    <ClCompile Include="src\zh_conf.cpp" />
+    <ClCompile Include="src\zh_epool.cpp" />
+    <ClCompile Include="src\zh_error.cpp" />
+    <ClCompile Include="src\zh_log.cpp" />
+    <ClCompile Include="src\zh_meta.cpp" />
+    <ClCompile Include="src\zh_thread.cpp" />
+    <ClCompile Include="src\zh_thr_queue.cpp" />
+    <ClCompile Include="src\zh_time.cpp" />
+    <ClCompile Include="src\zh_wordseg.cpp" />
+    <ClCompile Include="test\zh_util_unittest.cpp" />
+    <ClCompile Include="third\scws\cli\gen_dict.c" />
+    <ClCompile Include="third\scws\cli\scws_cmd.c" />
+    <ClCompile Include="third\scws\libscws\charset.c" />
+    <ClCompile Include="third\scws\libscws\crc32.c" />
+    <ClCompile Include="third\scws\libscws\darray.c" />
+    <ClCompile Include="third\scws\libscws\lock.c" />
+    <ClCompile Include="third\scws\libscws\pool.c" />
+    <ClCompile Include="third\scws\libscws\rule.c" />
+    <ClCompile Include="third\scws\libscws\scws.c" />
+    <ClCompile Include="third\scws\libscws\xdb.c" />
+    <ClCompile Include="third\scws\libscws\xdict.c" />
+    <ClCompile Include="third\scws\libscws\xtree.c" />
+    <ClCompile Include="third\scws\phpext\php_scws.c" />
+    <ClCompile Include="unittest\zh_conf_unittest.cpp" />
+    <ClCompile Include="unittest\zh_log_unittest.cpp" />
+    <ClCompile Include="unittest\zh_math_unittest.cpp" />
+    <ClCompile Include="unittest\zh_public_unittest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\zhuhai\common.h" />
+    <ClInclude Include="include\zhuhai\util.h" />
+    <ClInclude Include="include\zhuhai\zh_conf.h" />
+    <ClInclude Include="include\zhuhai\zh_epool.h" />
+    <ClInclude Include="include\zhuhai\zh_error.h" />
+    <ClInclude Include="include\zhuhai\zh_fixedlen_stack.h" />
+    <ClInclude Include="include\zhuhai\zh_log.h" />
+    <ClInclude Include="include\zhuhai\zh_math.h" />
+    <ClInclude Include="include\zhuhai\zh_meta.h" />
+    <ClInclude Include="include\zhuhai\zh_msghead.h" />
+    <ClInclude Include="include\zhuhai\zh_public.h" />
+    <ClInclude Include="include\zhuhai\zh_thread.h" />
+    <ClInclude Include="include\zhuhai\zh_thr_queue.h" />
+    <ClInclude Include="include\zhuhai\zh_time.h" />
+    <ClInclude Include="include\zhuhai\zh_wordseg.h" />
+    <ClInclude Include="third\scws\libscws\charset.h" />
+    <ClInclude Include="third\scws\libscws\config_win32.h" />
+    <ClInclude Include="third\scws\libscws\crc32.h" />
+    <ClInclude Include="third\scws\libscws\darray.h" />
+    <ClInclude Include="third\scws\libscws\lock.h" />
+    <ClInclude Include="third\scws\libscws\pool.h" />
+    <ClInclude Include="third\scws\libscws\rule.h" />
+    <ClInclude Include="third\scws\libscws\scws.h" />
+    <ClInclude Include="third\scws\libscws\scws_version.h" />
+    <ClInclude Include="third\scws\libscws\xdb.h" />
+    <ClInclude Include="third\scws\libscws\xdict.h" />
+    <ClInclude Include="third\scws\libscws\xtree.h" />
+    <ClInclude Include="third\scws\phpext\php_scws.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

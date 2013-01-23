@@ -44,3 +44,6 @@ third/scws/config.h
 # test files
 examples/libscws.so.1
 examples/libscws.so.1.1.0
+
+Debug
+~*
