@@ -28,7 +28,7 @@ typedef enum {
     ZH_RETCODE_NUM,
 } zh_ret_t;
 
-char *zh_strerror(int errnum);
+const char *zh_strerror(int errnum);
 
 #endif /* _ZH_ERROR_H_ */
 

@@ -273,7 +273,7 @@ zh_ret_t __vwritelog(const int event, const char *fmt, va_list args) {
     if (!is_valid_unit(unit_ptr)) {
         tid = pthread_self();
         fp = wf == 1 ? stderr : stdout;
-        log_name = "null";
+        log_name = (char*)"null";
     } else {
         tid = unit_ptr->tid;
         file_ptr = wf == 1 ? unit_ptr->file_wf_ptr : unit_ptr->file_ptr;

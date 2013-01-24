@@ -18,6 +18,7 @@
  *
  **/
 
+#include <stdlib.h>
 #include <zhuhai/zh_thr_queue.h>
 #include <zhuhai/zh_public.h>
 #include <zhuhai/zh_meta.h>

@@ -23,6 +23,8 @@
 #include <zhuhai/zh_epool.h>
 #include <zhuhai/zh_log.h>
 
+static void accept_cb(int listen_fd, short event, void *arg);
+
 zh_epool_t *zh_epool_open(const int sock_num) {
     if (sock_num < 0) {
         return NULL;
@@ -77,7 +79,8 @@ int zh_epool_set_listen_fd(zh_epool_t *p, const int fd) {
     }
 
     p->listen_fd = fd;
-    //p->listen_event = event_new();
+    p->listen_event = event_new(p->base, fd, EV_READ | EV_PERSIST, accept_cb, (void*)p);
+    event_add(p->listen_event, NULL);
 
     return ZH_SUCC;
 }
@@ -89,6 +92,7 @@ int zh_epool_start(zh_epool_t *p) {
 
     p->is_run = 1;
     event_base_dispatch(p->base);
+    ZH_NOTICE("loop starts");
 
     return ZH_SUCC;
 }
@@ -112,5 +116,17 @@ int zh_epool_is_run(zh_epool_t *p) {
     return 1 == p->is_run;
 }
 
+static void accept_cb(int listen_fd, short event, void *arg) {
+    //zh_epool_t *p = (zh_epool_t*)arg;
+    struct sockaddr_storage ss;
+    socklen_t slen = sizeof(ss);
+    int fd = accept(listen_fd, (struct sockaddr*)&ss, &slen);
+    if (fd < 0) {
+        // TODO print log
+    } else {
+        ZH_DEBUG("client comes");
+        close(fd);
+    }
+}
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

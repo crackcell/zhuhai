@@ -35,7 +35,7 @@ zh_wordseg_t *zh_wordseg_open(const char *fullpaths, size_t n,
         return NULL;
     }
 
-    char *paths;
+    char *paths = NULL;
     size_t paths_size;;
     char *delim, *start;
 

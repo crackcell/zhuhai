@@ -21,7 +21,7 @@ ifeq ($(OS), Linux)
 	LIB += -lm
 endif
 
-OBJ = ../src/libzhuhai.a
+OBJ = ../src/libzhuhai_debug.a
 
 TEST_SRC = $(wildcard *_example.cpp)
 TEST_OBJ = $(patsubst %.cpp, %.o, $(TEST_SRC))

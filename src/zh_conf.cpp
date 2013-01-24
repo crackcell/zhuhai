@@ -30,7 +30,7 @@
 using namespace std;
 using namespace boost;
 
-static int parse_line(zh_conf_t *p, const char *line, size_t size) {
+static int parse_line(zh_conf_t *p, char *line, size_t size) {
     char *delim = strchr(line, ':');
     if (NULL == delim) {
         return ZH_FAIL;
@@ -70,6 +70,9 @@ zh_conf_t *zh_conf_open(const char *path, const char *file) {
         return NULL;
     }
 
+    FILE *f;
+    char fullpath[PATH_MAX];
+
     zh_conf_t *p = (zh_conf_t*)malloc(sizeof(zh_conf_t));
     if (NULL == p) {
         goto err;
@@ -77,9 +80,8 @@ zh_conf_t *zh_conf_open(const char *path, const char *file) {
 
     p->items_ptr = new (nothrow) map<string, string>;
 
-    char fullpath[PATH_MAX];
     snprintf(fullpath, sizeof(fullpath), "%s/%s", path, file);
-    FILE *f = fopen(fullpath, "r");
+    f = fopen(fullpath, "r");
     if (NULL == f) {
         ZH_FATAL("open file fail[%s][%s]", fullpath, strerror(errno));
         goto err;

@@ -13,12 +13,13 @@ include ../Makefile.env
 
 ZH_ROOT = ../
 
-BUILD_TARGETS = libzhuhai.a
+BUILD_TARGETS = libzhuhai.a libzhuhai_debug.a
 
 INC = -I../include/ -I./ -I$(SCWS)/include
 
 SRC = $(wildcard *.cpp)
 OBJ = $(patsubst %.cpp, %.o, $(SRC))
+OBJ_DEBUG = $(patsubst %.cpp, %_d.o, $(SRC))
 
 .PHONY : all clean
 
@@ -26,9 +27,16 @@ all : $(BUILD_TARGETS)
 
 libzhuhai.a : $(OBJ)
 ifeq ($(OS), Darwin)
-	libtool -static -o $@ *.o
+	libtool -static -o $@ $^
 else
-	ar -cr -o $@ *.o
+	ar -cr -o $@ $^
+endif
+
+libzhuhai_debug.a : $(OBJ_DEBUG)
+ifeq ($(OS), Darwin)
+	libtool -static -o $@ $^
+else
+	ar -cr -o $@ $^
 endif
 
 clean :
