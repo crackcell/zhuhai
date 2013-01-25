@@ -24,9 +24,11 @@
 #include <zhuhai/zh_log.h>
 
 static void accept_cb(int listen_fd, short event, void *arg);
+static int initqueue(zh_epool_t *p);
+static int enqueue(zh_epool_t *p, struct zh_epool_job *job);
 
-zh_epool_t *zh_epool_open(const int sock_num) {
-    if (sock_num < 0) {
+zh_epool_t *zh_epool_open(const int max_job_num) {
+    if (max_job_num < 0) {
         return NULL;
     }
 
@@ -37,13 +39,15 @@ zh_epool_t *zh_epool_open(const int sock_num) {
 
     p->listen_fd = 0;
     p->is_run = 0;
+    p->max_job_num = max_job_num;
     pthread_mutex_init(&p->job_queue_lock, NULL);
     pthread_cond_init(&p->job_queue_cond, NULL);
-    p->job_queue = (struct zh_epool_job*)malloc(sizeof(struct zh_epool_job));
+    p->job_queue = (struct zh_epool_job*)malloc(sizeof(struct zh_epool_job) * max_job_num);
     if (NULL == p->job_queue) {
         ZH_FATAL("memory error");
         goto err;
     }
+    initqueue(p);
 
     p->base = event_base_new();
     if (NULL == p->base) {
@@ -90,9 +94,9 @@ int zh_epool_start(zh_epool_t *p) {
         return ZH_FAIL;
     }
 
+    ZH_DEBUG("loop starts");
     p->is_run = 1;
     event_base_dispatch(p->base);
-    ZH_NOTICE("loop starts");
 
     return ZH_SUCC;
 }
@@ -102,31 +106,70 @@ int zh_epool_stop(zh_epool_t *p) {
         return ZH_FAIL;
     }
 
+    ZH_DEBUG("loop stops");
     event_base_loopexit(p->base, NULL);
     p->is_run = 0;
 
     return ZH_SUCC;
 }
 
-int zh_epool_is_run(zh_epool_t *p) {
-    if (NULL == p) {
-        return ZH_FAIL;
-    }
-
-    return 1 == p->is_run;
-}
-
 static void accept_cb(int listen_fd, short event, void *arg) {
-    //zh_epool_t *p = (zh_epool_t*)arg;
+    zh_epool_t *p = (zh_epool_t*)arg;
+    static int count = 0;
+    ++count;
+    if (count == 3) {
+        zh_epool_stop(p);
+    }
     struct sockaddr_storage ss;
     socklen_t slen = sizeof(ss);
     int fd = accept(listen_fd, (struct sockaddr*)&ss, &slen);
     if (fd < 0) {
         // TODO print log
     } else {
-        ZH_DEBUG("client comes");
+        struct zh_epool_job job;
+        job.sock = fd;
+        gettimeofday(&job.in_queue_time, NULL);
+        enqueue(p, &job);
+        ZH_DEBUG("client comes, in_time[%d]", *(int*)(&job.in_queue_time));
+        const char *msg = "hello world\n";
+        send(fd, msg, strlen(msg) + 1, 0);
         close(fd);
     }
+}
+
+static int initqueue(zh_epool_t *p) {
+    if (NULL == p) {
+        return ZH_FAIL;
+    }
+
+    p->job_head = 0;
+    p->job_tail = 0;
+
+    return ZH_SUCC;
+}
+
+static int enqueue(zh_epool_t *p, struct zh_epool_job *job) {
+    if (NULL == p || NULL == job) {
+        return ZH_FAIL;
+    }
+
+    pthread_mutex_lock(&p->job_queue_lock);
+
+    int insert_pos = (p->job_tail + 1) % p->max_job_num;
+
+    if (insert_pos == p->job_head) {
+        ZH_DEBUG("job queue full");
+        goto err;
+    }
+    p->job_queue[insert_pos] = *job;
+    ZH_DEBUG("epool: pos[%d]=fd[%d]", insert_pos, job->sock);
+
+    p->job_tail = insert_pos;
+    pthread_mutex_unlock(&p->job_queue_lock);
+    return ZH_SUCC;
+err:
+    pthread_mutex_unlock(&p->job_queue_lock);
+    return ZH_FAIL;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

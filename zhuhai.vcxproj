@@ -37,7 +37,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>Z:\repo\github\zhuhai\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\cygwin\usr\include;D:\local_lib\libevent-2.0.21-stable\include;Z:\repo\github\zhuhai\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
