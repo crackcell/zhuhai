@@ -30,7 +30,6 @@ output
 .libs
 .deps
 config.status
-third/Makefile
 third/scws/Makefile
 third/scws/cli/Makefile
 third/scws/cli/gen-scws-dict

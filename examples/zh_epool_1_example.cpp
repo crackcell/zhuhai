@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     int listen_fd;
     struct sockaddr_in sin;
 
-    zh_epool_t *p = zh_epool_open(3, 3);
+    zh_epool_t *p = zh_epool_open(3);
 
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = 0;

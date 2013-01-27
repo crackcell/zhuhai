@@ -29,12 +29,13 @@ zh_sock_queue_t* zh_sock_queue_open(const int max_sock_num) {
 
     zh_sock_queue_t *p = (zh_sock_queue_t*)
                          malloc(sizeof(zh_sock_queue_t));
+    size_t sz;
     if (NULL == p) {
         ZH_FATAL("can't malloc");
         goto err;
     }
 
-    size_t sz = sizeof(zh_sock_queue_node_t) * max_sock_num;
+    sz = sizeof(zh_sock_queue_node_t) * max_sock_num;
     p->queue = (zh_sock_queue_node_t*)malloc(sz);
     if (NULL == p->queue) {
         ZH_FATAL("can't malloc");
