@@ -24,6 +24,10 @@
 
 static void accept_cb(int listen_fd, short event, void *arg);
 
+static int queue_append(zh_epool_t *p, const int fd);
+static int queue_fetch(zh_epool_t *p, int *fd, int *offset);
+static int queue_reset(zh_epool_t *p, const int offset);
+
 zh_epool_t *zh_epool_open(const int max_job_num) {
     if (max_job_num <= 0) {
         return NULL;
@@ -111,6 +115,22 @@ int zh_epool_stop(zh_epool_t *p) {
     return ZH_SUCC;
 }
 
+int zh_epool_fetch_item(zh_epool_t *p, int *offset, int *fd) {
+    if (NULL == p || NULL == offset || NULL == fd) {
+        return ZH_FAIL;
+    }
+    // TODO: check cond variable
+    return queue_fetch(p, offset, fd);
+}
+
+int zh_epool_reset_item(zh_epool_t *p, const int offset) {
+    if (NULL == p || offset < 0) {
+        return ZH_FAIL;
+    }
+    return queue_reset(p, offset);
+}
+
+
 /***************************************************************/
 
 static void accept_cb(int listen_fd, short event, void *arg) {
@@ -128,14 +148,13 @@ static void accept_cb(int listen_fd, short event, void *arg) {
     } else {
         ZH_DEBUG("client comes");
 
-        /*
         char *msg;
-        switch (enqueue(p, fd)) {
-        case Q_SUCC:
+        switch (queue_append(p, fd)) {
+        case ZH_SUCC:
             msg = "\nmsg: hello world\n";
             send(fd, msg, strlen(msg) + 1, 0);
             break;
-        case Q_FULL:
+        case ZH_QUEUE_FULL:
             msg = "\nerr: queue full\n";
             send(fd, msg, strlen(msg) + 1, 0);
             break;
@@ -144,10 +163,48 @@ static void accept_cb(int listen_fd, short event, void *arg) {
             send(fd, msg, strlen(msg) + 1, 0);
             break;
         }
-        */
-
-        close(fd);
+        //close(fd);
     }
+}
+
+static int queue_append(zh_epool_t *p, const int fd) {
+    if (NULL == p || fd < 0) {
+        return ZH_FAIL;
+    }
+
+    pthread_mutex_lock(&p->sock_queue_lock);
+    int ret = zh_sock_queue_append(p->sock_queue, fd);
+    pthread_mutex_unlock(&p->sock_queue_lock);
+    pthread_cond_signal(&p->sock_queue_cond);
+
+    return ret;
+}
+
+static int queue_fetch(zh_epool_t *p, int *fd, int *offset) {
+    if (NULL == p || NULL == fd || NULL == offset) {
+        return ZH_FAIL;
+    }
+
+    pthread_mutex_lock(&p->sock_queue_lock);
+    while (p->sock_queue->sock_num - p->sock_queue->work_num <= 0) {
+        pthread_cond_wait(&p->sock_queue_cond, &p->sock_queue_lock);
+    }
+    int ret = zh_sock_queue_fetch(p->sock_queue, fd, offset);
+    pthread_mutex_unlock(&p->sock_queue_lock);
+
+    return ret;
+}
+
+static int queue_reset(zh_epool_t *p, const int offset) {
+    if (NULL == p || offset < 0) {
+        return ZH_FAIL;
+    }
+
+    pthread_mutex_lock(&p->sock_queue_lock);
+    int ret = zh_sock_queue_reset(p->sock_queue, offset);
+    pthread_mutex_unlock(&p->sock_queue_lock);
+
+    return ret;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

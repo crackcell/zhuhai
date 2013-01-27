@@ -19,14 +19,33 @@
  **/
 
 #include <stdio.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <string.h>
 #include <zhuhai/zh_epool.h>
 #include <zhuhai/zh_util.h>
+
+zh_epool_t *p;
+int exit;
+
+void* worker_thread(void *arg) {
+    pthread_detach(pthread_self());
+    while (1) {
+        int fd;
+        int offset;
+        zh_epool_fetch_item(p, &fd, &offset);
+        const char *msg = "\nfrom worker\n";
+        printf("in worker\n");
+        write(fd, msg, strlen(msg) + 1);
+        zh_epool_reset_item(p, offset);
+    }
+}
 
 int main(int argc, char *argv[]) {
     int listen_fd;
     struct sockaddr_in sin;
 
-    zh_epool_t *p = zh_epool_open(3);
+    p = zh_epool_open(3);
 
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = 0;
@@ -46,6 +65,13 @@ int main(int argc, char *argv[]) {
 
     zh_epool_set_listen_fd(p, listen_fd);
     zh_epool_start(p);
+
+    pthread_t worker;
+    pthread_create(&worker, NULL, worker_thread, NULL);
+
+    while (0 == exit) {
+        sleep(1000);
+    }
 
     zh_epool_close(p);
     return 0;

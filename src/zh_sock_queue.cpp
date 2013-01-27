@@ -162,6 +162,7 @@ int zh_sock_queue_reset(zh_sock_queue_t *p, const int offset) {
         return ZH_SUCC;
     }
 
+    close(p->queue[offset].fd);
     p->queue[offset].state = ZH_SOCK_QUEUE_NODE_IDLE;
     p->sock_num--;
     p->work_num--;
