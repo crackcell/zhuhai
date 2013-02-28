@@ -148,7 +148,7 @@ static void accept_cb(int listen_fd, short event, void *arg) {
     } else {
         ZH_DEBUG("client comes");
 
-        char *msg;
+        const char *msg;
         switch (queue_append(p, fd)) {
         case ZH_SUCC:
             msg = "\nmsg: hello world\n";

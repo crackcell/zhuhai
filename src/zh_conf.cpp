@@ -121,8 +121,9 @@ int zh_conf_close(zh_conf_t *p) {
     return ZH_SUCC;
 }
 
-int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff, size_t size) {
-    if (NULL == p || NULL == k || NULL == buff || size < 0) {
+int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff,
+                    size_t size) {
+    if (NULL == p || NULL == k || NULL == buff) {
         return ZH_FAIL;
     }
 
@@ -138,7 +139,7 @@ int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff, size_t size) 
 
 int zh_conf_get_str(const zh_conf_t *p, const char *k, char *buff,
                     size_t size, const char *dft) {
-    if (NULL == p || NULL == buff || size < 0 || NULL == dft) {
+    if (NULL == p || NULL == buff || NULL == dft) {
         return ZH_FAIL;
     }
 

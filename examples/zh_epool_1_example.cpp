@@ -39,6 +39,7 @@ void* worker_thread(void *arg) {
         write(fd, msg, strlen(msg) + 1);
         zh_epool_reset_item(p, offset);
     }
+    return NULL;
 }
 
 int main(int argc, char *argv[]) {

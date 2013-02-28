@@ -24,6 +24,8 @@ static const char* g_errorstr[] = {
     "Success",           // 0
     "General failure",   // 1
     "Invalid parameters",
+    "Queue full",
+    "Queue empty",
     "Unknown error"      // ZH_RETCODE_NUM
 };
 
