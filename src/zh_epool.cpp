@@ -18,9 +18,10 @@
  *
  **/
 
+#include <string.h>
 #include <stdlib.h>
+#include <zhuhai/zh_error.h>
 #include <zhuhai/zh_epool.h>
-#include <zhuhai/zh_log.h>
 
 static void accept_cb(int listen_fd, short event, void *arg);
 
@@ -46,13 +47,13 @@ zh_epool_t *zh_epool_open(const int max_job_num) {
 
     p->sock_queue = zh_sock_queue_open(max_job_num);
     if (NULL == p->sock_queue) {
-        ZH_FATAL("memory error");
+        fprintf(stderr, "memory error");
         goto err;
     }
 
     p->base = event_base_new();
     if (NULL == p->base) {
-        ZH_FATAL("alloc event base fail");
+        fprintf(stderr, "alloc event base fail");
         goto err;
     }
 
@@ -96,7 +97,7 @@ int zh_epool_start(zh_epool_t *p) {
         return ZH_FAIL;
     }
 
-    ZH_DEBUG("loop starts");
+    fprintf(stderr, "loop starts");
     p->is_run = 1;
     event_base_dispatch(p->base);
 
@@ -108,7 +109,7 @@ int zh_epool_stop(zh_epool_t *p) {
         return ZH_FAIL;
     }
 
-    ZH_DEBUG("loop stops");
+    fprintf(stderr, "loop stops");
     event_base_loopexit(p->base, NULL);
     p->is_run = 0;
 
@@ -146,7 +147,7 @@ static void accept_cb(int listen_fd, short event, void *arg) {
     if (fd < 0) {
         // TODO print log
     } else {
-        ZH_DEBUG("client comes");
+        fprintf(stderr, "client comes");
 
         const char *msg;
         switch (queue_append(p, fd)) {

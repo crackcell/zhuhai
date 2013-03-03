@@ -25,7 +25,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <zhuhai/zh_public.h>
-#include <zhuhai/zh_log.h>
 
 using namespace std;
 using namespace boost;
@@ -83,12 +82,12 @@ zh_conf_t *zh_conf_open(const char *path, const char *file) {
     snprintf(fullpath, sizeof(fullpath), "%s/%s", path, file);
     f = fopen(fullpath, "r");
     if (NULL == f) {
-        ZH_FATAL("open file fail[%s][%s]", fullpath, strerror(errno));
+        fprintf(stderr, "open file fail[%s][%s]", fullpath, strerror(errno));
         goto err;
     }
 
     if (load_conf(p, f) == ZH_FAIL) {
-        ZH_FATAL("load conf fail");
+        fprintf(stderr, "load conf fail");
         goto err;
     }
 

@@ -25,7 +25,6 @@
 
 #include <zhuhai/zh_wordseg.h>
 #include <zhuhai/zh_public.h>
-#include <zhuhai/zh_log.h>
 
 using namespace std;
 
@@ -62,9 +61,9 @@ zh_wordseg_t *zh_wordseg_open(const char *fullpaths, size_t n,
             *delim = '\0';
         }
         if (scws_add_dict(w->scws, start, SCWS_XDICT_XDB) < 0) {
-            ZH_WARN("load dict fail[%s]", start);
+            fprintf(stderr, "load dict fail[%s]", start);
         }
-        ZH_TRACE("load dict[%s]", start);
+        fprintf(stderr, "load dict[%s]", start);
         if (delim != NULL) {
             start = delim + 1;
         } else {
