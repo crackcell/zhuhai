@@ -14,8 +14,7 @@ include ../Makefile.env
 ZH_ROOT = ../
 
 INC = -I../include/ -I./ -I$(SCWS)/include
-LIB = -L$(SCWS)/lib -lscws\
-	-levent \
+LIB = -levent \
 	-lpthread -ltcmalloc
 ifeq ($(OS), Linux)
 	LIB += -lm

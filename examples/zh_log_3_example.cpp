@@ -10,34 +10,26 @@
  **************************************************************/
 
 /**
- * 
+ * example for zh_log
  *
- * @file zh_thread.c
+ * @file zh_log_example.c
  * @author Tan Menglong <tanmenglong@gmail.com>
- * @date Tue Jun  5 08:56:14 2012
+ * @date Sat Sep  1 01:29:59 2012
  *
  **/
 
-#include <zhuhai/zh_thread.h>
+#include <zhuhai/zh_log.h>
 
-#include <pthread.h>
-#include <unistd.h>
-#include <sys/syscall.h>
+#include <stdio.h>
+#include <string.h>
 
-pid_t zh_gettid() {
-    pid_t tid;
-#ifdef Darwin
-    pthread_t ptid = pthread_self();
-    tid = pthread_threadid_np(ptid, &tid);
-#else
-  #ifdef Linux
-    #ifndef __NR_gettid
-    #define __NR_gettid 224
-    #endif
-    tid = syscall(__NR_gettid);
-  #endif
-#endif
-    return tid;
+int main(int argc, char *argv[]) {
+    //    zh_openlog("test", ".", "test_file", ZH_LOG_ALL);
+    zh_log_write(ZH_LOG_DEBUG, "%s", "test log");
+    zh_log_write(ZH_LOG_FATAL, "%s", "test log");
+    zh_log_close();
+
+    return 0;
 }
 
 /* vim: set expandtab shiftwidth=4 tabstop=4: */

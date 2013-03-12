@@ -22,6 +22,7 @@
  **/
 
 #include <stdint.h>
+#include <unistd.h>
 
 #ifdef x86_64
 #define ZH_CACHE_LINE_SIZE 64
@@ -36,7 +37,7 @@
 #define ZH_CACHE_LINE_ALIGN(size) \
     char __cacheline_align[ZH_CACHE_LINE_ALIGN_SIZE(size)];
 
-uint64_t get_tid_self();
+pid_t zh_gettid();
 
 #endif /* _ZH_THREAD_H_ */
 
