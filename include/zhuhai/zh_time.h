@@ -21,17 +21,15 @@
  *
  **/
 
+#include <stdint.h>
+#include <unistd.h>
 #include <time.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define ZH_TIME_BUFF_SIZE 32
 
+uint64_t zh_msec_epoch();
+time_t zh_sec_epoch();
 char *zh_ctime(char *buff, size_t buff_size);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _ZH_TIME_H_ */
 
